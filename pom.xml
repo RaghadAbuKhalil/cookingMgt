@@ -5,7 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
+<<<<<<< HEAD
     <artifactId>Cooking_Sweet</artifactId>
+=======
+    <artifactId>cookingSweet</artifactId>
+>>>>>>> 3d6b2c20874f916acc809ee5490b2fab2e3b8b40
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -13,6 +17,7 @@
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+<<<<<<< HEAD
     <dependencies>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -43,4 +48,7 @@
         </dependency>
 
     </dependencies>
+=======
+
+>>>>>>> 3d6b2c20874f916acc809ee5490b2fab2e3b8b40
 </project>
