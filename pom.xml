@@ -5,6 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    <artifactId>Cooking_Sweet</artifactId>
+=======
+    <artifactId>cookingSweet</artifactId>
+>>>>>>> 3d6b2c20874f916acc809ee5490b2fab2e3b8b40
+>>>>>>> c2345e81af49a42032953839780d242f2f2a7069
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -12,5 +20,42 @@
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+    <dependencies>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>7.20.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.20.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <version>7.21.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>7.21.1</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+=======
+
+>>>>>>> 3d6b2c20874f916acc809ee5490b2fab2e3b8b40
+>>>>>>> c2345e81af49a42032953839780d242f2f2a7069
 </project>
