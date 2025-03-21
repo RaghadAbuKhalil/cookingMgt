@@ -25,7 +25,13 @@ public class MealAllergyChecker {
 
 }
 
+    public static void setMealIngredients(Map<String, List<String>> mealIngredients) {
+        MealAllergyChecker.mealIngredients = mealIngredients;
+    }
+
+
     public static Map<String, List<String>> getMealIngredients() {
         return mealIngredients;
     }
 }
+

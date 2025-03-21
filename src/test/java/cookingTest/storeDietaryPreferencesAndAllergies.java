@@ -1,5 +1,6 @@
 package cookingTest;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,7 +9,6 @@ import org.junit.Assert;
 
 
 
-import static org.DietaryAndAllergies.checkAllergies;
 
 public class storeDietaryPreferencesAndAllergies {
 
@@ -19,9 +19,10 @@ public class storeDietaryPreferencesAndAllergies {
     public DietaryAndAllergies dietaryAndAllergies1;
 
 
+
     @Given("a customer wants to personalize their meal selection")
     public void aCustomerWantsToPersonalizeTheirMealSelection() {
-        dietaryAndAllergies1=new DietaryAndAllergies();
+        dietaryAndAllergies1 = new DietaryAndAllergies();
         Assert.assertNotNull("the object of DietaryAndAllergies is not created ",dietaryAndAllergies1); // if obj not created msg appear if obj created 2nd msg aprrear
         System.out.println("Customer is personalizing meal selection");
 
@@ -70,9 +71,10 @@ Assert.assertTrue("the map is empty",!dietaryAndAllergies1. getCustomerPreferenc
     @When("they try to order a dish containing his allergy")
     public void orderADishContainingHisAllergy() {
         order = "Strawberry CAKE";
-         warningMsg=checkAllergies(order);
+        warningMsg = dietaryAndAllergies1.checkAllergies(order);
         System.out.println("Customer attempts to order: " + order);
     }
+
 
 
     @Then("the system warns them and suggests an alternative")
