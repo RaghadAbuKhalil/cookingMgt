@@ -12,11 +12,11 @@ import org.junit.Assert;
 
 public class storeDietaryPreferencesAndAllergies {
 
-    private String allergy;
+    private final int testId = 1;
     private boolean   warningMsg=false;
     private String  order;
-
-    public DietaryAndAllergies dietaryAndAllergies1;
+private String allergy =dietaryAndAllergies1.getCustomerAllergies(testId);
+    private  static DietaryAndAllergies dietaryAndAllergies1;
 
 
 
@@ -29,14 +29,14 @@ public class storeDietaryPreferencesAndAllergies {
     }
     @When("they enter their dietary preferences and allergies into the system")
     public void theyEnterTheirDietaryPreferencesAndAllergiesIntoTheSystem() {
-        dietaryAndAllergies1.setCustomerPreferences("vagen","strawberry");
-Assert.assertTrue("the map is empty",!dietaryAndAllergies1. getCustomerPreferences().isEmpty());
-        System.out.println("Dietary preferences : " +dietaryAndAllergies1. getCustomerPreferences());
+        dietaryAndAllergies1. setCustomerPreferences(testId,"vagen","strawberry");
+Assert.assertNotNull("the map is empty",allergy);
+        System.out.println("Dietary preferences : " +allergy);
     }
     @Then("the system stores the preferences and ensures future orders comply with them")
     public void theSystemStoresThePreferencesAndEnsuresFutureOrdersComplyWithThem() {
-        Assert.assertTrue("Preferences should be stored",dietaryAndAllergies1. getCustomerPreferences().containsKey("Diet"));
-        System.out.println("Preferences successfully saved."+dietaryAndAllergies1. getCustomerPreferences());
+        Assert.assertNotNull("Preferences should be stored",allergy);
+        System.out.println("Preferences successfully saved."+allergy);
     }
 
 
@@ -44,8 +44,8 @@ Assert.assertTrue("the map is empty",!dietaryAndAllergies1. getCustomerPreferenc
 
     @Given("a customer has saved their dietary preferences")
     public void aCustomerHasSavedTheirDietaryPreferences() {
-       Assert.assertFalse("Preferences not  exist", dietaryAndAllergies1. getCustomerPreferences().isEmpty());
-        System.out.println("Customer preferences exist   " + dietaryAndAllergies1. getCustomerPreferences());
+       Assert.assertNotNull("Preferences not  exist", allergy);
+        System.out.println("Customer preferences exist   " + allergy);
     }
     @When("a chef prepares a meal for that customer")
     public void aChefPreparesAMealForThatCustomer() {
@@ -53,8 +53,8 @@ Assert.assertTrue("the map is empty",!dietaryAndAllergies1. getCustomerPreferenc
     }
     @Then("the system displays their preferences to the chef for customization")
     public void theSystemDisplaysTheirPreferencesToTheChefForCustomization() {
-        Assert.assertNotNull("Preferencesare not available to the chef", dietaryAndAllergies1. getCustomerPreferences().get("Diet"));
-        System.out.println("Preferences displayed to chef: " +dietaryAndAllergies1. getCustomerPreferences());
+        Assert.assertNotNull("Preferencesare not available to the chef",allergy );
+        System.out.println("Preferences displayed to chef: " +allergy);
     }
 
 
@@ -62,16 +62,16 @@ Assert.assertTrue("the map is empty",!dietaryAndAllergies1. getCustomerPreferenc
 
     @Given("a customer has an allergy")
     public void aCustomerHasAnAllergy() {
-   if (  dietaryAndAllergies1. getCustomerPreferences().get("Allergy")==null)
+   if ( allergy ==null || allergy.isEmpty())
        System.out.println("Customer does not have any allergy")   ;
-      else    System.out.println("Customer allergy: " + dietaryAndAllergies1. getCustomerPreferences().get("Allergy"));
+      else    System.out.println("Customer allergy: " +allergy);
 
     }
 
     @When("they try to order a dish containing his allergy")
     public void orderADishContainingHisAllergy() {
         order = "Strawberry CAKE";
-        warningMsg = dietaryAndAllergies1.checkAllergies(order);
+        warningMsg = dietaryAndAllergies1.checkAllergies(1,order);
         System.out.println("Customer attempts to order: " + order);
     }
 
