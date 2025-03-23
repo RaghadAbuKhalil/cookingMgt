@@ -87,7 +87,7 @@ public class CustomMealService {
              PreparedStatement stmt = conn.prepareStatement(sqlStmt)) {
             stmt.setInt(1, mealId1);
             int updated = stmt.executeUpdate();
-            if (updated>0)return true;
+            if (updated > 0) return true;
 
 
         } catch (SQLException e) {
@@ -95,4 +95,51 @@ public class CustomMealService {
         }
         return false;
     }
-}
+
+    public boolean ingretientIsAvailable(String ing) {
+        String available = "SELECT ingredient_id FROM inventory WHERE name = ? AND status = 'available'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(available)) {
+            stmt.setString(1, ing);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return true;
+
+            } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public String suggestAlternetive(String ing) {
+        String query = "SELECT name FROM inventory WHERE dietary_category = (SELECT dietary_category FROM inventory WHERE name = ?) AND status = 'available' LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query )) {
+            stmt.setString(1, ing);
+            ResultSet rs = stmt.executeQuery();
+        if (rs.next()){
+            return rs.getString(1);
+        }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public int getPreviousMeal(int customerId) {
+        String query = "SELECT meal_id FROM custom_meals WHERE customer_id = ? AND status = 'draft' LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+return -1;
+    }
+    }

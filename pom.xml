@@ -91,11 +91,11 @@
         </dependency>
 
 
-
         <dependency>
+
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.36.0.3</version>
+            <version>3.41.2.2</version>
         </dependency>
 
         <dependency>
@@ -104,6 +104,5 @@
             <version>2.1.214</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>
