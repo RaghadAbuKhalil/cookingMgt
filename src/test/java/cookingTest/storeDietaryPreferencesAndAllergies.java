@@ -46,6 +46,7 @@ Assert.assertNotNull("the map is empty",allergy);
     @Given("a customer has saved their dietary preferences")
     public void aCustomerHasSavedTheirDietaryPreferences() {
        Assert.assertNotNull("Preferences not  exist", allergy);
+        Assert.assertTrue("allargy empty",!allergy.isEmpty());
         System.out.println("Customer preferences exist   " + allergy);
     }
     @When("a chef prepares a meal for that customer")

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class OrderHistoryService {
     private static OrderHistoryService instance;
-    private static final String URL = "jdbc:h2:./testdb";  // استخدام وضع التخزين الدائم
+    private static final String URL = "jdbc:h2:./database.db";  // استخدام وضع التخزين الدائم
 
 
     private static final String USER = "sa";
