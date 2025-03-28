@@ -88,8 +88,8 @@ private String ingredient;
         ingredient=arg0;
     }
 
-    @Then("it should suggest {string} that does not trigger any allergic reactions")
-    public void itShouldSuggestThatDoesNotTriggerAnyAllergicReactions(String arg0) {
+    @Then("it should suggest ingredient that does not trigger any allergic reactions")
+    public void itShouldSuggestThatDoesNotTriggerAnyAllergicReactions() {
         suggestedAlternative = customMealService.suggestAlternetive(ingredient,mealId);
         Assert.assertNotNull(suggestedAlternative);
     }

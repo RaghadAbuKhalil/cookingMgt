@@ -37,7 +37,7 @@ Feature: Suggest Ingredient Substitutions Based on Dietary Restrictions
   Scenario Outline: Suggest an alternative for an allergenic ingredient
     Given a customer selects "<ingredient>" which is an allergen for them
     When the system checks for a suitable alternative
-    Then it should suggest "<alternative>" that does not trigger any allergic reactions
+    Then it should suggest ingredient that does not trigger any allergic reactions
     And display a message: "<ingredient> is unavailable, would you like to try "
 
     Examples:
