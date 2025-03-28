@@ -10,31 +10,8 @@ public class DietaryAndAllergies {
     private static OrderHistoryService instance;
     private static final String URL = "jdbc:sqlite:database.db";  // استخدام وضع التخزين الدائم
 
-
-    private static final String USER = "sa";
-    private static final String PASSWORD = "";
     public DietaryAndAllergies() {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement()) {
-            conn.setAutoCommit(false);
-            String sql1 = "CREATE TABLE IF NOT EXISTS customers ( " +
-                    "customer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "customer_name TEXT NOT NULL " +
-                    ");";
-
-            String sql2 = "CREATE TABLE IF NOT EXISTS customer_preferences (" +
-                    "customer_id INTEGER PRIMARY KEY, " +
-                    "dietary TEXT, " +
-                    "allergies TEXT, " +
-                    "FOREIGN KEY (customer_id) REFERENCES customers(customer_id)" +
-                    ");";
-            stmt.executeUpdate(sql1);
-            stmt.executeUpdate(sql2);
-            System.out.println("O");
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+     DatabaseSetup.setupDatabase();
     }
 
 
@@ -99,11 +76,6 @@ public class DietaryAndAllergies {
     }
 
     public static void main(String[] args) {
-        // Insert some test data
-        setCustomerPreferences(1, "Vegan", "Nuts");
-        setCustomerPreferences(2, "Halal", "None");
 
-        // Check allergy warnings
-        checkAllergies(1, "Pasta");
     }
 }

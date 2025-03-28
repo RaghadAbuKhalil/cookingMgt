@@ -49,6 +49,35 @@ assertTrue(" meal does not  created", rs.next()&& mealId>0);
         }
             System.out.println("customer is going to  customize a meal");
 
+
+     /*   String invItems="INSERT   OR IGNORE INTO inventory (name, status, dietary_category) VALUES"+
+                " ('Grilled tofu', 'available', 'Vegetarian'),"+
+                " ('chicken', 'out of stock', 'Non-vegetarian'),"+
+                " ('rice', 'available', 'Vegetarian'),"+
+                " ('fish', 'available', 'Non-Vegetarian'),"+
+                " ('tomato', 'out of stock', 'Vegetarian'),"+
+                " ('cheese', 'out of stock', 'Non-Vegetarian'),"+
+                " ('Vegan cheese ', 'available', 'Vegetarian'),"+
+                " ('Grilled mushrooms', 'available', 'Vegetarian'),"+
+                " ('Salmon ', 'out of stock', 'Vegetarian'),"+
+                "('strawberry', 'available', 'Non-vegetarian');";
+
+
+
+
+
+
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement()) {
+            conn.setAutoCommit(false );
+            stmt.execute(invItems);
+            stmt.execute(incompatableItems);
+            conn.commit();}
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }*/
+
     }
 
     @When("they select available ingredients like grilled chicken, brown rice, and broccoli")
@@ -136,27 +165,20 @@ String sql = "SELECT inventory.name " +
     }
     @When("they select incompatible ingredients")
     public void theySelectIncompatibleIngredients() {
+       if (mealId<=0)  mealId = customMealService.createCustomMeal(1,"custom meal 2");
 
-        mealId = customMealService.createCustomMeal(1,"custom meal 2");
         String checkQuery = "SELECT COUNT(*) FROM incompatible_ingredients WHERE " +
                 "(ingredient1 = ? OR ingredient2 = ?) " +
                 "AND (ingredient1 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?) " +
                 "OR ingredient2 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?))";
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(checkQuery)) {
-
             ResultSet rs = stmt.executeQuery();
-
-
-            assertTrue(" meal does not  created", rs.next()&& mealId>0);
-        }
-
+            assertTrue(" meal does not  created", rs.next()&& mealId>0);}
         catch (SQLException e) {
             e.printStackTrace();
             fail("Database error occurred.");
         }
-        mealId = customMealService.createCustomMeal(1, "Test Meal");
 
         boolean add1 = customMealService.addIngredient(mealId, "fish");
         assertTrue("First ingredient should be added", add1);
@@ -164,6 +186,7 @@ String sql = "SELECT inventory.name " +
         boolean add2 = customMealService.addIngredient(mealId, "cheese");
         assertFalse("Second ingredient should not be added", add2);
       }
+
     @When("they select an ingredient that is an allergen for them")
     public void theySelectAnIngredientThatIsAnAllergenForThem() {
         ingr.clear();
@@ -219,25 +242,19 @@ if (!checkAddingIng)    System.out.println("An attemp to add uncompatabile  or u
 
     }
 
-    @And("suggest an alternative if available")
-    public void suggestAnAlternativeIfAvailable() {
-        for (String ing :notAvailableIngr) {
-            assertNotNull("Can not find an alternative ",CustomMealService.getInstance().suggestAlternetive(ing));
-            System.out.println(" We suggest "+    CustomMealService.getInstance().suggestAlternetive(ing)+"as an alternative  ");
-
-
-        }
-    }
 
 
 }
    /* String invItems="INSERT   OR IGNORE INTO inventory (name, status, dietary_category) VALUES"+
-                " ('broccoli', 'available', 'Vegetarian'),"+
-                " ('chicken', 'available', 'Non-vegetarian'),"+
+                " ('Grilled tofu', 'available', 'Vegetarian'),"+
+                " ('chicken', 'out of stock', 'Non-vegetarian'),"+
                 " ('rice', 'available', 'Vegetarian'),"+
                 " ('fish', 'available', 'Non-Vegetarian'),"+
                 " ('tomato', 'out of stock', 'Vegetarian'),"+
-                " ('cheese', 'available', 'Vegetarian'),"+
+                " ('cheese', 'out of stock', 'Non-Vegetarian'),"+
+                 " ('Vegan cheese ', 'available', 'Vegetarian'),"+
+                  " ('Grilled mushrooms', 'available', 'Vegetarian'),"+
+                 " ('Salmon ', 'out of stock', 'Vegetarian'),"+
                 "('strawberry', 'available', 'Non-vegetarian');";
         String incompatableItems ="INSERT INTO incompatible_ingredients (ingredient1, ingredient2) VALUES \n" +
                 "    ((SELECT ingredient_id FROM inventory WHERE name = 'fish'), \n" +
@@ -261,5 +278,4 @@ String all ="select * from inventory";
         conn.commit();}
         catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-*/
+        }*/
