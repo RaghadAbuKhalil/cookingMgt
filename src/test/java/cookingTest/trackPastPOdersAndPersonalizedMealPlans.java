@@ -26,13 +26,13 @@ public class trackPastPOdersAndPersonalizedMealPlans {
     @Given("a customer has previously placed meal orders")
     public void a_customer_has_previously_placed_meal_orders() {
 
-        orderService.storeOrder("cust1", "Vegan Salad");
-        orderService.storeOrder("cust1", "Pasta");
+        orderService.storeOrder(1, "Vegan Salad");
+        orderService.storeOrder(1, "Pasta");
     }
 
     @When("they navigate to their order history page")
     public void they_navigate_to_their_order_history_page() {
-        orderedlist = orderService.getOrderHistory("cust1");
+        orderedlist = orderService.getOrderHistory(1);
     }
 
     @Then("the system displays a list of their past meal orders")
@@ -43,20 +43,12 @@ public class trackPastPOdersAndPersonalizedMealPlans {
 
     @And("the customer can reorder any past meal with a single click")
     public void the_customer_can_reorder_any_past_meal_with_a_single_click() {
-        reorderMessage = orderService.reorderMeal("cust1", "Pasta");
-        Assert.assertEquals("Meal reordered successfully: Pasta", reorderMessage);
+        reorderMessage = orderService.reorderMeal(1, "Pasta");
+        Assert.assertEquals("Meal reordered successfully Pasta", reorderMessage);
         System.out.println(reorderMessage);
     }
 
-
-
-
-
-    // الخطوة الأولى: العميل قد وضع طلبات سابقة
-
-
-
-
+//******************************************************
     @Given("a chef wants to suggest a meal plan,")
     public void aChefWantsToSuggestAMealPlan() {
 
@@ -64,14 +56,13 @@ public class trackPastPOdersAndPersonalizedMealPlans {
 
     @When("they access the customer’s order history,")
     public void theyAccessTheCustomerSOrderHistory() {
-        orderedlist = orderService.getOrderHistory("cust1");
+        orderedlist = orderService.getOrderHistory(1);
     }
 
     @Then("they can view past preferences and suggest a suitable plan.")
     public void theyCanViewPastPreferencesAndSuggestASuitablePlan() {
         System.out.println("Customer's past orders: " + orderedlist);
 
-        // مثال على اقتراح خطة وجبات بناءً على الطلبات السابقة
         if (orderedlist.contains("Vegan Salad")) {
             System.out.println("Suggested meal plan: Vegan meal options");
         } else {

@@ -29,7 +29,7 @@ public class CustomMealService {
         String insert = "INSERT INTO custom_meal_ingredients (meal_id" +
                 ", ingredient_id, quantity) VALUES (?, ?, 1)";
         String checkAllergies = "SELECT dietary, allergies FROM customer_preferences WHERE customer_id = (SELECT customer_id FROM custom_meals WHERE meal_id = ?)";
- String checkIncompatabile =  "SELECT COUNT(*) FROM incompatible_ingredients WHERE (ingredient1 = ? OR ingredient2 = ?) " +
+        String checkIncompatabile =  "SELECT COUNT(*) FROM incompatible_ingredients WHERE (ingredient1 = ? OR ingredient2 = ?) " +
          "AND (ingredient1 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?) " +
          "OR ingredient2 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?))";
 
@@ -133,9 +133,6 @@ public class CustomMealService {
 
 
     public String suggestAlternetive(String ing) {
-
-
-
 
          String query = "SELECT name FROM inventory WHERE dietary_category = (SELECT dietary_category FROM inventory WHERE name = ?) AND status = 'available' LIMIT 1";
        // String query = "select* FROM inventory";

@@ -5,9 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-   private static final String URL = "jdbc:sqlite:database.db"; // ملف SQLite
+    private static final String URL = "jdbc:sqlite:database.db"; // ملف SQLite
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL);
+
     }
 }
