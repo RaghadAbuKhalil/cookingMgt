@@ -190,7 +190,6 @@ String sql = "SELECT inventory.name " +
     @When("they select an ingredient that is an allergen for them")
     public void theySelectAnIngredientThatIsAnAllergenForThem() {
         ingr.clear();
-        ingr.add("broccoli");
         ingr.add("strawberry");
 
         for (String addIng :ingr){
@@ -202,7 +201,7 @@ String sql = "SELECT inventory.name " +
     @When("they select an ingredient that does not match their dietary preferences")
     public void theySelectAnIngredientThatDoesNotMatchTheirDietaryPreferences() {
             ingr.clear();
-            ingr.add("rice");
+
             ingr.add("chicken");
             for (String addIng :ingr){
                 boolean check = customMealService.addIngredient(2,addIng);

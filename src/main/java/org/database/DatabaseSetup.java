@@ -25,7 +25,7 @@ String ingredients ="CREATE TABLE IF NOT EXISTS custom_meal_ingredients (meal_id
        String incompatableItems ="INSERT INTO incompatible_ingredients (ingredient1, ingredient2) VALUES \n" +
                "    ((SELECT ingredient_id FROM inventory WHERE name = 'fish'), \n" +
                "     (SELECT ingredient_id FROM inventory WHERE name = 'cheese'));\n" ;
-         String sql4="CREATE TABLE incompatible_ingredients (\n" +
+         String sql4="CREATE TABLE incompatible_ingredients IF NOT EXISTS (\n" +
                "    ingredient1 INT,\n" +
                "    ingredient2 INT,\n" +
                "    PRIMARY KEY (ingredient1, ingredient2),\n" +
