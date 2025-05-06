@@ -235,7 +235,7 @@ if (!checkAddingIng)    System.out.println("An attemp to add uncompatabile  or u
             }
         }}
 
-
+//***********notify
     @Then("it should notify the customer")
     public void itShouldNotifyTheCustomer() {
         if (!notAvailableIngr.isEmpty()){  System.out.println(" Sorry ! some added ingredient are out of stock ")   ;}

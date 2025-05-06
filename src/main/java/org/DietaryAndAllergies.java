@@ -4,6 +4,7 @@ import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
 import java.sql.*;
+import java.util.Locale;
 
 public class DietaryAndAllergies {
     public static MealAllergyChecker mealAllergyChecker1 = new MealAllergyChecker();
@@ -26,8 +27,8 @@ public class DietaryAndAllergies {
 
             conn.setAutoCommit(false);
             stmt.setInt(1, customerId);
-            stmt.setString(2, dietary);
-            stmt.setString(3, allergies);
+            stmt.setString(2, dietary.toLowerCase());
+            stmt.setString(3, allergies.toLowerCase());
             stmt.executeUpdate();
             System.out.println("Customer preferences saved successfully!");
             conn.commit();
@@ -47,6 +48,21 @@ public class DietaryAndAllergies {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getString("allergies");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getCustomerPreferences(int customerId) {
+        String sql = "SELECT dietary FROM customer_preferences WHERE customer_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false);
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("dietary");
             }
         } catch (SQLException e) {
             e.printStackTrace();
