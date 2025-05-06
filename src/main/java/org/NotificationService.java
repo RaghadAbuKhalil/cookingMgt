@@ -6,8 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationService {
     // إرسال إشعار للطاهٍ
@@ -61,7 +61,7 @@ public class NotificationService {
 
             StringBuilder notifications = new StringBuilder();
             while (rs.next()) {
-                notifications.append(rs.getString("task_name")).append(", ");
+                notifications.append(rs.getString("task_name"));
             }
             return notifications.toString();
         } catch (SQLException e) {
@@ -69,6 +69,27 @@ public class NotificationService {
         }
         return "No notifications";
     }
+    public List<String> getNotificationsListForChef(int chefId) {
+        List<String> notificationsList = new ArrayList<>();
+        String sql = "SELECT task_name FROM notifications WHERE chef_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, chefId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                notificationsList.add(rs.getString("task_name"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return notificationsList;
+    }
+
 }
 
 

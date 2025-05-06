@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class InvoicesAndFinancial {
+/*public class InvoicesAndFinancial {
     OrderHistoryService order1;
     TaskManager taskmanager=new TaskManager();
     public InvoicesAndFinancial() {
@@ -59,7 +59,7 @@ return taskstatus;
             e.printStackTrace();
         }
         return totalRevenue;
-    }
+    }*/
     /*  public double getDailyRevenue() {
         double totalRevenue = 0.0;
         String sql = "SELECT SUM(price) FROM ORDERS WHERE order_date = CURRENT_DATE AND status = 'Completed'";
@@ -114,4 +114,4 @@ return taskstatus;
     }
 }*/
 
-}
+

@@ -25,9 +25,7 @@ public class KitchenManagerService {
     }
 
 
-    public String getTaskProgress(String taskName) {
-        return taskAssignment.TaskStatus(taskName);
-    }
+
 
 
     public int assignTask(String taskName,  String requiredExpertise) {

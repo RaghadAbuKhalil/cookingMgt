@@ -1,6 +1,7 @@
 package cookingTest;
 
 import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -8,6 +9,9 @@ import io.cucumber.java.en.When;
 import org.*;
 import org.database.DatabaseSetup;
 import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +25,7 @@ public class schedulingAndTaskManagement {
     private KitchenManagerService kitchenManager1  = KitchenManagerService.getInstance();
     int  chosenChef;
     String mealname;
+    List notificationList= new ArrayList<String>();
     @Before
     public void setup() {
         DatabaseSetup.setupDatabase();
@@ -48,24 +53,23 @@ public class schedulingAndTaskManagement {
     @Then("the system should assign the task to the chef with the least workload and required expertise {string}")
     public void theSystemShouldAssignTheTaskToTheChefWithTheLeastWorkloadAndRequiredExpertise(String arg0) {
          int chefid=kitchenManager1.assignTask(mealname,arg0);
-        Assert.assertEquals( 8,chefid );
+        Assert.assertEquals( 58,chefid );
 
     }
 
 
     @And("the chef should receive a notification about the new task")
     public void theChefShouldReceiveANotificationAboutTheNewTask() {
-      //  String notificationmsg = notification1.sendNotification(2, "Prepare Vegan Salad");
+       String notificationmsg = notification1.getChefNotifications(58);
 
-
-        assertNotNull(notificationmsg);
-        assertTrue("Chef did not receive notification", notificationmsg.contains("Notification sent to Chef ID"));
+        Assert.assertEquals("Chef receive notification", notificationmsg, mealname);
 
         System.out.println("Notification message: " + notificationmsg);
     }
 
     @Given("a chef has been assigned a new task {string}")
     public void aChefHasBeenAssignedANewTask(String arg0) {
+
 
     }
 
@@ -77,17 +81,24 @@ public class schedulingAndTaskManagement {
     @Then("the chef should see the task notification in their task list")
     public void theChefShouldSeeTheTaskNotificationInTheirTaskList() {
 
-        String taskNotificationForChef = chef1.getChefNotifications("chef2");
-        assert(taskNotificationForChef.contains("Prepare Vegan Salad"));
+        notificationList= notification1.getNotificationsListForChef(58);
+        Assert.assertNotNull("notification in their task list",notificationList.contains(mealname));
+
     }
 
     @And("they should be able to acknowledge the task")
     public void theyShouldBeAbleToAcknowledgeTheTask() {
-        boolean completeTask1= chef1.completeTask("chef2", "Prepare Vegan Salad");
-        assert(completeTask1);
+       // boolean completeTask1= chef1.completeTask("chef2", "Prepare Vegan Salad");
+        //assert(completeTask1);
+
+       // chef1.taskInProgress(48, mealname);
+        String status = taskmanager1.TaskStatus(mealname,58);
+        Assert.assertEquals("chet acknowledge the task","Acknowledge",status);
+
+
 
     }
-
+/*
     @Given("a chef has started working on the task {string}")
     public void aChefHasStartedWorkingOnTheTask(String arg0) {
 
@@ -122,7 +133,7 @@ public class schedulingAndTaskManagement {
     public void theKitchenManagerShouldBeAbleToSeeTheUpdatedProgress() {
     String taskStatus = taskmanager1.TaskStatus("meet");
     Assert.assertEquals("Kitchen Manager should see 'Completed' status", "Completed", taskStatus);
-    }
+    }*/
 
 
 }

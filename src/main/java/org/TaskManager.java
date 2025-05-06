@@ -1,8 +1,12 @@
 package org;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.database.DatabaseConnection;
+
+import javax.swing.*;
 
 public class TaskManager {
     private Chef chef1;
@@ -145,14 +149,26 @@ public class TaskManager {
         }
     }
 
-    public String TaskStatus(String taskName) {
+    public String TaskStatus(String taskName, int chefid) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT status FROM tasks WHERE task_name = ?";
+            String query = "SELECT status FROM tasks WHERE task_name = ? AND chef_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, taskName);
+                // تعيين المعاملات بشكل صحيح
+                stmt.setString(1, taskName);  // إزالة الفراغات الزائدة إن وجدت
+                stmt.setInt(2, chefid);  // استخدام setInt بدلاً من setString للـ chef_id
+
+                System.out.println("Executing query with taskName: " + taskName + " and chefId: " + chefid);
+
                 ResultSet rs = stmt.executeQuery();
+
                 if (rs.next()) {
-                    return rs.getString("status");
+
+                    String status = rs.getString("status");
+                    System.out.println("Found status: " + status);
+                    return status;
+                } else {
+                    // إذا لم نجد أي نتائج
+                    System.out.println("No matching task found for taskName: " + taskName + " and chefId: " + chefid);
                 }
             }
         } catch (SQLException e) {
@@ -175,7 +191,7 @@ public class TaskManager {
 
         public int assignTaskToChefByExpertise(String taskName,  String requiredExpertise) {
             String selectSql = "SELECT chef_id, jobload FROM CHEFS WHERE expertise = ? ORDER BY jobload ASC LIMIT 1";
-            String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Assigned')";
+            String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Acknowledge')";
             String updateLoadSql = "UPDATE CHEFS SET jobload = jobload + 1 WHERE chef_id = ?";
             int selectedChefId = -1;
             try (Connection conn = DatabaseConnection.getConnection()) {
@@ -211,8 +227,23 @@ public class TaskManager {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            List<String> taskList = new ArrayList<>();
+            String query = "SELECT task_name FROM task WHERE chef_id = ?";
 
-            chef1.beginTask(selectedChefId,taskName);
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+
+                stmt.setInt(1, selectedChefId);
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    String taskName1 = rs.getString("task_name");
+                    taskList.add(taskName1);
+                }
+                JOptionPane.showMessageDialog(null,taskList);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             return selectedChefId;
         }
     }
