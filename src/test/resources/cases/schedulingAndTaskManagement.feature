@@ -1,10 +1,9 @@
 Feature: Scheduling and Task Management
 
   Scenario: Assign tasks to chefs based on workload and expertise
-    Given there are available chefs in the kitchen
-    And each chef has a defined workload and expertise level
+    Given there are available chefs in the kitchen each chef has a defined workload and expertise level
     When the kitchen manager assigns the task "Prepare Vegan Salad"
-    Then the system should assign the task to the chef with the least workload and required expertise
+    Then the system should assign the task to the chef with the least workload and required expertise "Advanced Level"
     And the chef should receive a notification about the new task
 
   Scenario: Chef receives a notification about the assigned task

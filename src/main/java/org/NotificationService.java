@@ -14,7 +14,7 @@ public class NotificationService {
     private static NotificationService instance;
   //  private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
 
-    private NotificationService() {
+    public NotificationService() {
         // Private constructor to prevent instantiation
     }
 
@@ -52,11 +52,11 @@ public class NotificationService {
     }
 
 
-    public String getChefNotifications(String chefName) {
+    public String getChefNotifications(int chefid) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT task_name FROM notifications WHERE chef_id = (SELECT chef_id FROM CHEFS WHERE chef_name = ?)";
+            String sql = "SELECT task_name FROM notifications WHERE chef_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, chefName);
+            stmt.setString(1, String.valueOf(chefid));
             ResultSet rs = stmt.executeQuery();
 
             StringBuilder notifications = new StringBuilder();

@@ -44,7 +44,7 @@ public class DatabaseSetup {
                 "chef_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "chef_name VARCHAR(255) NOT NULL, " +
                 "expertise VARCHAR(255) NOT NULL, " +
-                "jobload INT NOT NULL)";
+                "jobload INT NOT NULL DEFAULT 0)";
 
         String task = "CREATE TABLE IF NOT EXISTS tasks (" +
                 "task_id INTEGER PRIMARY KEY AUTOINCREMENT, " +

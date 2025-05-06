@@ -22,27 +22,50 @@ public class Chef {
     }
 
 
-    public void addChef(String chefName, int jobload, String Expertise) {
+    public void addChef(String chefName, String Expertise) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "INSERT INTO CHEFS (chef_name, expertise, jobload) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO CHEFS (chef_name, expertise) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, chefName);
             stmt.setString(2, Expertise);
-            stmt.setInt(3, jobload);
+
             stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void beginTask(String chefName, String taskName) {
+
+         public void setChefJobload(int chefId, int jobload) {
+             String sql = "UPDATE CHEFS SET jobload = ? WHERE chef_id = ?";
+
+             try (Connection conn = DatabaseConnection.getConnection();
+                  PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                 stmt.setInt(1, jobload);
+                 stmt.setInt(2, chefId);
+
+                 int updated = stmt.executeUpdate();
+                 if (updated > 0) {
+                     System.out.println("Jobload updated successfully for chef ID: " + chefId);
+                 } else {
+                     System.out.println("Chef not found with ID: " + chefId);
+                 }
+
+             } catch (SQLException e) {
+                 e.printStackTrace();
+             }
+         }
+
+
+    public void beginTask(int chefid, String taskName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             Chef.getInstance();
 
-            String sql = "UPDATE tasks SET status = 'In Progress' WHERE task_name = ? AND chef_id = (SELECT chef_id FROM chefs WHERE chef_name = ?)";
+            String sql = "UPDATE tasks SET status = 'In Progress' WHERE task_name = ? AND chef_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, taskName);
-            stmt.setString(2, chefName);
+            stmt.setString(2, String.valueOf(chefid));
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -6,10 +6,12 @@ import org.database.DatabaseConnection;
 
 public class TaskManager {
     private Chef chef1;
+
     private static TaskManager instance;
 
     public TaskManager() {
         chef1 = new Chef();
+
     }
 
     public static TaskManager getInstance() {
@@ -97,6 +99,7 @@ public class TaskManager {
                 stmt.setString(1, taskName);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
+
                     return rs.getString("chef_name");
                 }
             }
@@ -168,6 +171,49 @@ public class TaskManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }}
+
+        public int assignTaskToChefByExpertise(String taskName,  String requiredExpertise) {
+            String selectSql = "SELECT chef_id, jobload FROM CHEFS WHERE expertise = ? ORDER BY jobload ASC LIMIT 1";
+            String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Assigned')";
+            String updateLoadSql = "UPDATE CHEFS SET jobload = jobload + 1 WHERE chef_id = ?";
+            int selectedChefId = -1;
+            try (Connection conn = DatabaseConnection.getConnection()) {
+
+
+                try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+                    stmt.setString(1, requiredExpertise);
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        selectedChefId = rs.getInt("chef_id");
+
+                    } else {
+                        System.out.println("No chef found with expertise: " + requiredExpertise);
+                        return -1;
+                    }
+                }
+
+
+                try (PreparedStatement stmt = conn.prepareStatement(insertTaskSql)) {
+                    stmt.setString(1, taskName);
+                    stmt.setInt(2, selectedChefId);
+                    stmt.executeUpdate();
+                }
+
+
+                try (PreparedStatement stmt = conn.prepareStatement(updateLoadSql)) {
+                    stmt.setInt(1, selectedChefId);
+                    stmt.executeUpdate();
+                }
+
+                System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            chef1.beginTask(selectedChefId,taskName);
+            return selectedChefId;
         }
     }
-}
+

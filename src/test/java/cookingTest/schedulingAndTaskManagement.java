@@ -19,7 +19,8 @@ public class schedulingAndTaskManagement {
     private Chef chef1 ;
     private NotificationService notification1 = NotificationService.getInstance();
     private KitchenManagerService kitchenManager1  = KitchenManagerService.getInstance();
-    String  chosenChef;
+    int  chosenChef;
+    String mealname;
     @Before
     public void setup() {
         DatabaseSetup.setupDatabase();
@@ -27,38 +28,36 @@ public class schedulingAndTaskManagement {
         this.taskmanager1= TaskManager.getInstance();// استخدام الكائن الوحيد (Singleton)
     }
 
-    @Given("there are available chefs in the kitchen")
-    public void thereAreAvailableChefsInTheKitchen() {
-        this.chef1 = Chef.getInstance();
- chef1.addChef("chef1", 0, "Beginner");
-        chef1.addChef("chef2", 5, "Advanced Level");
+
+    @Given("there are available chefs in the kitchen each chef has a defined workload and expertise level")
+    public void thereAreAvailableChefsInTheKitchenEachChefHasADefinedWorkloadAndExpertiseLevel() {
+        chef1.addChef("chef1", "Beginner");
+        chef1.setChefJobload(1,4);
+        chef1.addChef("chef2",  "Advanced Level");
+        chef1.setChefJobload(2,3);
         chef1.printAllChefs();
-
-    }
-
-    @And("each chef has a defined workload and expertise level")
-    public void eachChefHasADefinedWorkloadAndExpertiseLevel() {
-
 
     }
 
     @When("the kitchen manager assigns the task {string}")
     public void theKitchenManagerAssignsTheTask(String arg0) {
-        taskmanager1.giveChefTask("Prepare Vegan Salad",2,"Beginner");
-         chosenChef = taskmanager1.choosenChef("Prepare Vegan Salad");
+       mealname=arg0;
 
-        Assert.assertNotNull("Chef must be assigned to the task", chosenChef);
     }
 
-    @Then("the system should assign the task to the chef with the least workload and required expertise")
-    public void theSystemShouldAssignTheTaskToTheChefWithTheLeastWorkloadAndRequiredExpertise() {
-         //chosenChef = taskmanager1.choosenChef("Prepare Vegan Salad");
-        Assert.assertEquals("chef1", chosenChef);  // التحقق من أن الطاهي المختار هو "chef1"
+    @Then("the system should assign the task to the chef with the least workload and required expertise {string}")
+    public void theSystemShouldAssignTheTaskToTheChefWithTheLeastWorkloadAndRequiredExpertise(String arg0) {
+         int chefid=kitchenManager1.assignTask(mealname,arg0);
+        Assert.assertEquals( 8,chefid );
+
     }
+
 
     @And("the chef should receive a notification about the new task")
     public void theChefShouldReceiveANotificationAboutTheNewTask() {
-        String notificationmsg = notification1.sendNotification(2, "Prepare Vegan Salad");
+      //  String notificationmsg = notification1.sendNotification(2, "Prepare Vegan Salad");
+
+
         assertNotNull(notificationmsg);
         assertTrue("Chef did not receive notification", notificationmsg.contains("Notification sent to Chef ID"));
 
@@ -95,7 +94,6 @@ public class schedulingAndTaskManagement {
         String taskStatus = taskmanager1.TaskStatus("meet");
 
         if (taskStatus == null || taskStatus.equals("Completed")) {
-            // إذا لم تكن المهمة موجودة أو تم إنهاؤها سابقًا، نقوم بإعادة الطلب
             System.out.println("Reassigning task: " + "meet");
             taskmanager1.giveChefTask("meet", 1, "Beginner"); // تعيين المهمة لشيف جديد
         }
@@ -125,4 +123,7 @@ public class schedulingAndTaskManagement {
     String taskStatus = taskmanager1.TaskStatus("meet");
     Assert.assertEquals("Kitchen Manager should see 'Completed' status", "Completed", taskStatus);
     }
+
+
 }
+

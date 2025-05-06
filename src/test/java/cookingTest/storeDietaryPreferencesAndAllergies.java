@@ -75,7 +75,7 @@ public class storeDietaryPreferencesAndAllergies {
       else    System.out.println("Customer allergy: " +allergy);
 
     }
-//**********************************تعديل رغد
+
     @When("they try to order a dish containing his allergy")
     public void orderADishContainingHisAllergy() {
         order = "Strawberry CAKE";
