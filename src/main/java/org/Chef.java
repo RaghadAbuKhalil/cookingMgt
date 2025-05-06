@@ -57,8 +57,21 @@ public class Chef {
              }
          }
 
+    public void taskAcknowledgeTask (int chefid, String taskName) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            Chef.getInstance();
 
-    public void beginTask(int chefid, String taskName) {
+            String sql = "UPDATE tasks SET status = 'Acknowledge' WHERE task_name = ? AND chef_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, taskName);
+            stmt.setString(2, String.valueOf(chefid));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void taskInProgress(int chefid, String taskName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             Chef.getInstance();
 
@@ -102,9 +115,7 @@ public class Chef {
             e.printStackTrace();
         }
     }
-    public String getChefNotifications(String chefName) {
-        return NotificationService.getInstance().getChefNotifications(chefName);
-    }
+
 
     public boolean chefExists(int chefId) {
         try (Connection conn = DatabaseConnection.getConnection()) {
