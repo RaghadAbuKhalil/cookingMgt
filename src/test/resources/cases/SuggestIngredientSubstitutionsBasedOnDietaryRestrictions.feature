@@ -18,6 +18,7 @@ Feature: Suggest Ingredient Substitutions Based on Dietary Restrictions
 
 
 
+
   # Scenario 2: Suggest Ingredient Substitutes Based on Dietary Restrictions
   Scenario Outline: Suggest alternative ingredients based on dietary restrictions
     Given a customer selects "<ingredient>" which is restricted for their dietary preferences
