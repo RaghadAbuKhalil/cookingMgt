@@ -1,0 +1,21 @@
+[33ma6044ac[m[33m ([m[1;36mHEAD -> [m[1;32mraghad[m[33m)[m HEAD@{0}: commit (merge): Merge remote-tracking branch 'origin/hiba' into raghad
+[33mabcdfde[m[33m ([m[1;31morigin/raghad[m[33m)[m HEAD@{1}: commit: TRIAl3
+[33m01eac7e[m HEAD@{2}: commit: TRIAl3
+[33m4499cf2[m HEAD@{3}: commit: TRIAl3
+[33md56e6a3[m HEAD@{4}: commit: TRIAl3
+[33me5bfe31[m HEAD@{5}: commit: TRIAl3
+[33ma876ebd[m HEAD@{6}: commit (merge): Merge remote-tracking branch 'origin/hiba' into raghad
+[33m432465d[m HEAD@{7}: commit: TRIAl3
+[33m16b6cd2[m HEAD@{8}: commit: TRIAl3
+[33ma1339f2[m HEAD@{9}: merge origin/hiba: Fast-forward
+[33md789f5a[m HEAD@{10}: commit: TRIAl3
+[33m42e1fad[m HEAD@{11}: commit: Resolved merge conflict and standardized artifactId naming
+[33m261c4b3[m HEAD@{12}: reset: moving to origin/hiba
+[33mc2345e8[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{13}: checkout: moving from master to raghad
+[33mc2345e8[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{14}: commit: TRIAl3
+[33m59444fb[m HEAD@{15}: commit: TRIAl3
+[33mb1f8703[m HEAD@{16}: commit: TRIAL 1
+[33mdd9bfda[m HEAD@{17}: commit (merge): Merge remote-tracking branch 'origin/master'
+[33m5a3d87f[m HEAD@{18}: commit: TRIAL 1
+[33md84356a[m HEAD@{19}: commit: TRIAL 1
+[33m3d6b2c2[m HEAD@{20}: commit (initial): Initial commit
