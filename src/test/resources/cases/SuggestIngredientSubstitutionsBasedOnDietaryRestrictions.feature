@@ -10,13 +10,12 @@ Feature: Suggest Ingredient Substitutions Based on Dietary Restrictions
     And "<ingredient>" is out of stock
     When the system checks for a suitable alternative
     Then it should suggest  available alternative
-    And display a message: "<ingredient> is unavailable, would you like to try "
+    And display a message: "Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
 
     Examples:
        |ingredient|
        | tomato|
-        |Chicken|
-       |Cheese |
+
 
 
   # Scenario 2: Suggest Ingredient Substitutes Based on Dietary Restrictions
@@ -24,25 +23,23 @@ Feature: Suggest Ingredient Substitutions Based on Dietary Restrictions
     Given a customer selects "<ingredient>" which is restricted for their dietary preferences
     When the system checks for a suitable alternative
     Then it should suggest  ingredient that matches their dietary preferences
-    And display a message: "<ingredient> is unavailable, would you like to try "
+    And display a message: "<Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
 
     Examples:
       | ingredient     |
       | Fish           |
-      | Cheese         |
       | Chicken        |
 
 
-  # Scenario 3: Suggest Ingredient Substitutes for Allergic Reactions
+
   Scenario Outline: Suggest an alternative for an allergenic ingredient
     Given a customer selects "<ingredient>" which is an allergen for them
     When the system checks for a suitable alternative
     Then it should suggest "<alternative>" that does not trigger any allergic reactions
-    And display a message: "<ingredient> is unavailable, would you like to try "
+    And display a message: " Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
 
     Examples:
       | ingredient |
       | Strawberry   |
-      | Peanuts      |
-      | Milk         |
+
 

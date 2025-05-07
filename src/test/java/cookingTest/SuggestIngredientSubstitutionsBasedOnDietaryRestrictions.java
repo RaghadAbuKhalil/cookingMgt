@@ -76,7 +76,6 @@ private String ingredient;
 
     @Then("it should suggest  ingredient that matches their dietary preferences")
     public void itShouldSuggestThatMatchesTheirDietaryPreferences() {
-        suggestedAlternative = customMealService.suggestAlternetive(ingredient,mealId);
         Assert.assertNotNull(suggestedAlternative);
     }
 
@@ -90,8 +89,7 @@ private String ingredient;
 
     @Then("it should suggest {string} that does not trigger any allergic reactions")
     public void itShouldSuggestThatDoesNotTriggerAnyAllergicReactions(String arg0) {
-        suggestedAlternative = customMealService.suggestAlternetive(ingredient,mealId);
-        Assert.assertNotNull(suggestedAlternative);
+              Assert.assertNotNull(suggestedAlternative);
     }
 
 

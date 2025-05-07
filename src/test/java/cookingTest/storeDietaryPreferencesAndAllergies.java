@@ -18,15 +18,12 @@ public class storeDietaryPreferencesAndAllergies {
     private String  order;
     private String allergy =dietaryAndAllergies1.getCustomerAllergies(testId);
     private String preferences =dietaryAndAllergies1.getCustomerPreferences(testId);
-    private  static DietaryAndAllergies dietaryAndAllergies1;
-    @BeforeAll
-   private void setup(){
+    private  static DietaryAndAllergies dietaryAndAllergies1 ;
 
- dietaryAndAllergies1 = new DietaryAndAllergies();
-   }
 
     @Given("a customer wants to personalize their meal selection")
     public void aCustomerWantsToPersonalizeTheirMealSelection() {
+        dietaryAndAllergies1 =new DietaryAndAllergies();
         Assert.assertNotNull("the object of DietaryAndAllergies is not created ",dietaryAndAllergies1); // if obj not created msg appear if obj created 2nd msg aprrear
         System.out.println("Customer is personalizing meal selection");
 

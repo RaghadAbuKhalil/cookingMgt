@@ -6,6 +6,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.CustomMealService;
+import org.NotificationService;
 import org.database.DatabaseConnection;
 
 import java.sql.*;
@@ -22,6 +23,8 @@ public class CustomMealRequest {
     private List<String> ingr = new ArrayList<>();
     private List<String> notAvailableIngr = new ArrayList<>();
     boolean checkAddingIng=true;
+    private  int testCustomerId =1 ;
+    private   String suggestedAlternative;
     @BeforeAll
     public static void setup() {
 
@@ -31,7 +34,7 @@ public class CustomMealRequest {
     @Given("a customer wants to create a custom meal")
     public void aCustomerWantsToCreateACustomMeal() {
 
-        mealId = customMealService.createCustomMeal(1,"new meal");
+        mealId = customMealService.createCustomMeal(testCustomerId,"new meal");
 
         String checkQuery = "SELECT EXISTS (SELECT 1 FROM custom_meals WHERE meal_id = ?)";
 
@@ -142,7 +145,7 @@ String sql = "SELECT inventory.name " +
 
     @Given("a customer wants to customize their meal")
     public void aCustomerWantsToCustomizeTheirMeal() {
-        mealId = customMealService.createCustomMeal(1,"custom meal 2");
+        mealId = customMealService.createCustomMeal(testCustomerId,"custom meal 2");
         String checkQuery = "SELECT EXISTS (SELECT 1 FROM custom_meals WHERE meal_id = ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(checkQuery)) {
@@ -165,7 +168,7 @@ String sql = "SELECT inventory.name " +
     }
     @When("they select incompatible ingredients")
     public void theySelectIncompatibleIngredients() {
-       if (mealId<=0)  mealId = customMealService.createCustomMeal(1,"custom meal 2");
+       if (mealId<=0)  mealId = customMealService.createCustomMeal(2,"custom meal 2");
 
         String checkQuery = "SELECT COUNT(*) FROM incompatible_ingredients WHERE " +
                 "(ingredient1 = ? OR ingredient2 = ?) " +
@@ -180,7 +183,7 @@ String sql = "SELECT inventory.name " +
             fail("Database error occurred.");
         }
 
-        boolean add1 = customMealService.addIngredient(mealId, "fish");
+        boolean add1 = customMealService.addIngredient(mealId, "rice");
         assertTrue("First ingredient should be added", add1);
 
         boolean add2 = customMealService.addIngredient(mealId, "cheese");
@@ -190,7 +193,6 @@ String sql = "SELECT inventory.name " +
     @When("they select an ingredient that is an allergen for them")
     public void theySelectAnIngredientThatIsAnAllergenForThem() {
         ingr.clear();
-        ingr.add("broccoli");
         ingr.add("strawberry");
 
         for (String addIng :ingr){
@@ -202,7 +204,6 @@ String sql = "SELECT inventory.name " +
     @When("they select an ingredient that does not match their dietary preferences")
     public void theySelectAnIngredientThatDoesNotMatchTheirDietaryPreferences() {
             ingr.clear();
-            ingr.add("rice");
             ingr.add("chicken");
             for (String addIng :ingr){
                 boolean check = customMealService.addIngredient(2,addIng);
@@ -243,7 +244,32 @@ if (!checkAddingIng)    System.out.println("An attemp to add uncompatabile  or u
     }
 
 
+    @Given("a customer created a custom meal")
+    public void aCustomerWithIDCreatedACustomMeal() {
+        mealId = customMealService.createCustomMeal(testCustomerId, "Vegan Delight");
+        assertTrue("Meal should be created", mealId > 0);
+    }
 
+    @And("the customer tries to add {string} which is not suitable")
+    public void theCustomerTriesToAddWhichIsNotSuitable(String arg0) {
+        checkAddingIng = customMealService.addIngredient(mealId, arg0);
+        assertFalse("Incompatible ingredient should not be added", checkAddingIng);
+    }
+
+    @When("the system suggests an alternative ingredient")
+    public void theSystemSuggestsAnAlternativeIngredient() {
+        suggestedAlternative = customMealService.suggestAlternetive("chicken", mealId);
+        assertNotNull("A suggested alternative should be displayed ", suggestedAlternative);
+    }
+
+    @Then("the chef is alerted with the substitution")
+    public void theChefIsAlertedWithTheSubstitution() {
+        String msg = "Ingredient 'chicken' was rejected. Suggested instead: " + suggestedAlternative;
+        String result = NotificationService.getInstance().sendNotification(1, msg);
+        assertTrue(result.contains("Notification sent "));
+        List<String> notifications = NotificationService.getInstance().getNotificationsListForChef(1);
+        assertTrue(notifications.contains(msg));
+    }
 }
    /* String invItems="INSERT   OR IGNORE INTO inventory (name, status, dietary_category) VALUES"+
                 " ('Grilled tofu', 'available', 'Vegetarian'),"+
@@ -257,7 +283,7 @@ if (!checkAddingIng)    System.out.println("An attemp to add uncompatabile  or u
                  " ('Salmon ', 'out of stock', 'Vegetarian'),"+
                 "('strawberry', 'available', 'Non-vegetarian');";
         String incompatableItems ="INSERT INTO incompatible_ingredients (ingredient1, ingredient2) VALUES \n" +
-                "    ((SELECT ingredient_id FROM inventory WHERE name = 'fish'), \n" +
+                "    ((SELECT ingredient_id FROM inventory WHERE name = 'broccoli'), \n" +
                 "     (SELECT ingredient_id FROM inventory WHERE name = 'cheese'));\n" ;
 
 String all ="select * from inventory";

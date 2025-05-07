@@ -77,9 +77,10 @@ public class DatabaseSetup {
             stmt.execute(task);
             stmt.execute(orders);
             stmt.execute(notifications);
+           ;
 
             // تفعيل المفاتيح الأجنبية في SQLite
-            stmt.execute("PRAGMA foreign_keys = ON;");
+           // stmt.execute("PRAGMA foreign_keys = ON;");
             System.out.println("Database created successfully");
 
         } catch (Exception e) {

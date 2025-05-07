@@ -43,41 +43,43 @@ public class CustomMealService {
             conn.setAutoCommit(false);
 
 
-            checkStmt.setString(1, ingr);
+            checkStmt.setString(1, ingr.toLowerCase());
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
                 int ingredientId = rs.getInt("ingredient_id");
-                System.out.println("Ingredient available: " + ingr);
+
                 String category = rs.getString("dietary_category");
                 if (!checkAllergiesAndDietary(mealId, ingr, category)) {
                     conn.commit();
                     return false;
                 }
 
+else {
+                    System.out.println("Ingredient available: " + ingr);
+                    try (PreparedStatement stmt = conn.prepareStatement(checkIncompatabile)) {
+                        stmt.setInt(1, ingredientId);
+                        stmt.setInt(2, ingredientId);
+                        stmt.setInt(3, mealId);
+                        stmt.setInt(4, mealId);
+                        ResultSet rs1 = stmt.executeQuery();
 
-                try (PreparedStatement stmt = conn.prepareStatement(checkIncompatabile)) {
-                    stmt.setInt(1, ingredientId);
-                    stmt.setInt(2, ingredientId);
-                    stmt.setInt(3, mealId);
-                    stmt.setInt(4, mealId);
-                    ResultSet rs1 = stmt.executeQuery();
-
-                    if (rs1.next() && rs1.getInt(1) > 0) {
-                        System.out.println("This ingredient is incompatible with another ingredient in the meal.");
-                        conn.commit();
-                        return false;
+                        if (rs1.next() && rs1.getInt(1) > 0) {
+                            System.out.println("This ingredient is incompatible with another ingredient in the meal.");
+                            conn.commit();
+                            return false;
+                        }
                     }
-                }
 
-                try (
-                        PreparedStatement insertStmt = conn.prepareStatement(insert)) {
-                    insertStmt.setInt(1, mealId);
-                    insertStmt.setInt(2, ingredientId);
-                    insertStmt.executeUpdate();
-                    System.out.println("Added: " + ingr);
-                    conn.commit();
-                    return true;
+                    try (
+                            PreparedStatement insertStmt = conn.prepareStatement(insert)) {
+                        insertStmt.setInt(1, mealId);
+                        insertStmt.setInt(2, ingredientId);
+                        insertStmt.executeUpdate();
+                        System.out.println("Added: " + ingr);
+                        conn.commit();
+                        return true;
+                    }
                 }
             } else {
                 System.out.println("Ingredient unavailable: " + ingr);
@@ -103,11 +105,11 @@ public class CustomMealService {
             if (allergyResult.next()) {
                 String dietary = allergyResult.getString(1);
                 String allergy = allergyResult.getString(2);
-                if (allergy != null && allergy.equals(ingr)) {
+                if (allergy != null && allergy.toLowerCase().equals(ingr.toLowerCase())) {
                     System.out.println("Customer has an  allergy to " + ingr);
                     return false;
                 }
-                if (dietary.equals("vagen") && category.equals("Non-vegetarian")) {
+                if (dietary.equals("vagen") && category.toLowerCase().equals("Non-vegetarian".toLowerCase())) {
                     System.out.println(ingr + " is not suitable a vegen diet.");
                     return false;
                 }
