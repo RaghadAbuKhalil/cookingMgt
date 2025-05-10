@@ -1,13 +1,14 @@
 package org.database;
 
-import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.*;
+import java.text.SimpleDateFormat;
 
 public class DatabaseSetup {
     public static void setupDatabase() {
         String customers = "CREATE TABLE IF NOT EXISTS customer_preferences (" +
-                "customer_id INTEGER PRIMARY KEY, " +
+                "customer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "dietary TEXT, " +
+                "email TEXT, " +
                 "allergies TEXT)";
 
         String custom = "CREATE TABLE IF NOT EXISTS custom_meals (" +
@@ -17,14 +18,7 @@ public class DatabaseSetup {
                 "status TEXT CHECK (status IN ('draft', 'finalized')) DEFAULT 'draft', " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id))";
 
-        String orders = "CREATE TABLE IF NOT EXISTS ORDERS (" +
-                "order_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "customer_id INTEGER, " +
-                "meal_name VARCHAR(255), " +
-                "status VARCHAR(255),"+
-                "price REAL NOT NULL,"+
-                "order_date DATE DEFAULT CURRENT_DATE,"+
-                "is_repeated BOOLEAN DEFAULT FALSE)";
+
 
         String ingredients = "CREATE TABLE IF NOT EXISTS custom_meal_ingredients (" +
                 "meal_id INTEGER, " +
@@ -64,21 +58,44 @@ public class DatabaseSetup {
                 "task_name TEXT, " +
                 "status TEXT DEFAULT 'unacknowledged', " +
                 "FOREIGN KEY (chef_id) REFERENCES CHEFS(chef_id) ON DELETE SET NULL)";
+        String invoices = "CREATE TABLE IF NOT EXISTS INVOICES (" +
+                "invoice_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "order_id INTEGER, " +
+                "meal_name TEXT, " +
+                "price REAL, " +
+                "quantity INTEGER DEFAULT 1,"+
+                "total_price REAL,"+
+                "status TEXT, " +
+                "order_date TEXT, " +
+                "FOREIGN KEY(order_id) REFERENCES ORDERS(order_id))";
+
+        String orders = "CREATE TABLE IF NOT EXISTS ORDERS (" +
+                "order_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "customer_id INTEGER, " +
+                "meal_name VARCHAR(255), " +
+                "status VARCHAR(255),"+
+                "price REAL NOT NULL,"+
+                "quantity INTEGER DEFAULT 1,"+
+                "order_date TEXT,"+
+                "is_repeated BOOLEAN DEFAULT FALSE)";
+
+
+
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // تنفيذ الجمل الخاصة بإنشاء الجداول
+
             stmt.execute(customers);
             stmt.execute(custom);
             stmt.execute(ingredients);
             stmt.execute(inventory);
-            stmt.execute(chef); // يجب أن يتم إنشاء الجدول قبل "tasks"
+            stmt.execute(chef);
             stmt.execute(task);
             stmt.execute(orders);
             stmt.execute(notifications);
+            stmt.execute(invoices);
 
-            // تفعيل المفاتيح الأجنبية في SQLite
             stmt.execute("PRAGMA foreign_keys = ON;");
             System.out.println("Database created successfully");
 

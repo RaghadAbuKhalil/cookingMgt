@@ -29,10 +29,9 @@ public class NotificationService {
         return instance;
     }
     public String sendNotification(int chefId, String taskName) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            // إدخال إشعار باستخدام chef_id مباشرةً
-            String insertNotification = "INSERT INTO notifications (chef_id, task_name) VALUES (?, ?)";
-            PreparedStatement stmtInsert = conn.prepareStatement(insertNotification);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmtInsert = conn.prepareStatement("INSERT INTO notifications (chef_id, task_name) VALUES (?, ?)")) {
+
             stmtInsert.setInt(1, chefId);
             stmtInsert.setString(2, taskName);
 
@@ -41,7 +40,6 @@ public class NotificationService {
                 System.out.println("Notification sent to Chef ID: " + chefId + " for task: " + taskName);
                 return "Notification sent to Chef ID: " + chefId + " for task: " + taskName;
             } else {
-
                 System.out.println("Chef ID '" + chefId + "' not found in database.");
                 return "Error: Chef ID '" + chefId + "' not found.";
             }
@@ -69,6 +67,7 @@ public class NotificationService {
         }
         return "No notifications";
     }
+
     public List<String> getNotificationsListForChef(int chefId) {
         List<String> notificationsList = new ArrayList<>();
         String sql = "SELECT task_name FROM notifications WHERE chef_id = ?";
@@ -89,6 +88,28 @@ public class NotificationService {
 
         return notificationsList;
     }
+    public synchronized void sendChefRemindersForTomorrow() throws InterruptedException {
+     //   Thread.sleep(500); // نصف ثانية
+
+        String query = "SELECT t.task_name, t.chef_id " +
+                "FROM tasks t " +
+                "JOIN orders o ON t.order_id = o.order_id " +
+                "WHERE o.order_date = date('now', '+1 day') AND t.status = 'Acknowledge'";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String taskName = rs.getString("task_name");
+                int chefId = rs.getInt("chef_id");
+                sendNotification(chefId, taskName);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

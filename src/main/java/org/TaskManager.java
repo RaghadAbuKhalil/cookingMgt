@@ -29,7 +29,7 @@ public class TaskManager {
         return instance;
     }
 
-    public void giveChefTask(String taskName, int chefId, String expertiseRequired) {
+   /* public void giveChefTask(String taskName, int chefId, String expertiseRequired) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (conn == null) {
                 System.out.println("Unable to establish a database connection.");
@@ -111,14 +111,11 @@ public class TaskManager {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
-    public void assignTaskToChef(int orderId, String mealName) {
+    public int assignTaskToChef(int orderId, String mealName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            if (conn == null) {
-                System.out.println("Unable to establish a database connection.");
-                return;
-            }
+
 
             String query = "SELECT chef_id FROM CHEFS ORDER BY jobload ASC LIMIT 1";
             int chefId = -1;
@@ -128,14 +125,15 @@ public class TaskManager {
                 if (rs.next()) {
                     chefId = rs.getInt("chef_id");
                 }
+
             }
 
             if (chefId == -1) {
                 System.out.println("No available chefs to assign the task.");
-                return;
+                return chefId;
             }
 
-            String insertTaskQuery = "INSERT INTO tasks (order_id, chef_id, task_name, status) VALUES (?, ?, ?, 'Assigned')";
+            String insertTaskQuery = "INSERT INTO tasks (order_id, chef_id, task_name, status) VALUES (?, ?, ?, 'Acknowledge')";
             try (PreparedStatement stmt = conn.prepareStatement(insertTaskQuery)) {
                 stmt.setInt(1, orderId);
                 stmt.setInt(2, chefId);
@@ -143,17 +141,18 @@ public class TaskManager {
                 stmt.executeUpdate();
                 NotificationService.getInstance().sendNotification(chefId, "New Task Assigned: " + mealName);
             }
-
+            return chefId;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public String TaskStatus(String taskName, int chefid) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT status FROM tasks WHERE task_name = ? AND chef_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                // تعيين المعاملات بشكل صحيح
+
                 stmt.setString(1, taskName);  // إزالة الفراغات الزائدة إن وجدت
                 stmt.setInt(2, chefid);  // استخدام setInt بدلاً من setString للـ chef_id
 
@@ -177,17 +176,6 @@ public class TaskManager {
         return null;
     }
 
-    public void updateTaskStatus(String taskName, String status) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "UPDATE tasks SET status = ? WHERE task_name = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, status);
-                stmt.setString(2, taskName);
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }}
 
         public int assignTaskToChefByExpertise(String taskName,  String requiredExpertise) {
             String selectSql = "SELECT chef_id, jobload FROM CHEFS WHERE expertise = ? ORDER BY jobload ASC LIMIT 1";
@@ -222,29 +210,16 @@ public class TaskManager {
                     stmt.executeUpdate();
                 }
 
+
                 System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            List<String> taskList = new ArrayList<>();
-            String query = "SELECT task_name FROM task WHERE chef_id = ?";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
-                stmt.setInt(1, selectedChefId);
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    String taskName1 = rs.getString("task_name");
-                    taskList.add(taskName1);
-                }
-                JOptionPane.showMessageDialog(null,taskList);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
             return selectedChefId;
         }
-    }
+
+}
 

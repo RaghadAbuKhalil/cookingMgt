@@ -122,4 +122,5 @@ public class DietaryAndAllergies {
         // Check allergy warnings
         checkAllergies(1, "Pasta");
     }
+
 }

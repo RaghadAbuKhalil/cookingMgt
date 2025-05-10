@@ -57,20 +57,7 @@ public class Chef {
              }
          }
 
-    public void taskAcknowledgeTask (int chefid, String taskName) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            Chef.getInstance();
 
-            String sql = "UPDATE tasks SET status = 'Acknowledge' WHERE task_name = ? AND chef_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, taskName);
-            stmt.setString(2, String.valueOf(chefid));
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
     public void taskInProgress(int chefid, String taskName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             Chef.getInstance();
@@ -84,21 +71,23 @@ public class Chef {
             e.printStackTrace();
         }
     }
-    public boolean completeTask(String chefName, String taskName) {
+
+    public void completeTask(int chefId, String taskName) {
+
         try (Connection conn = DatabaseConnection.getConnection()) {
             Chef.getInstance();
 
-            String sql = "UPDATE tasks SET status = 'Completed' WHERE task_name = ? AND chef_id = (SELECT chef_id FROM chefs WHERE chef_name = ?)";
+            String sql = "UPDATE tasks SET status = 'Completed' WHERE task_name = ? AND chef_id = ? ";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, taskName);
-            stmt.setString(2, chefName);
+            stmt.setString(2, String.valueOf(chefId));
             stmt.executeUpdate();
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+
     }
+
     public void printAllChefs() {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "SELECT * FROM CHEFS";
