@@ -33,7 +33,6 @@ price=supplier.getRealTimePrice(string);
     }
     @Then("the system shows the current price from the supplier")
     public void theSystemShowsTheCurrentPriceFromTheSupplier() {
-      //  assertTrue("there is no price for this ingredient",price<=0);
         logger.info("The price for this ingredient is "+price);
     }
 

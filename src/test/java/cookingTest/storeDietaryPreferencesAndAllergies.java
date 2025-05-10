@@ -50,12 +50,12 @@ public class storeDietaryPreferencesAndAllergies {
         Assert.assertTrue("allergy empty",!allergy.isEmpty());
         System.out.println("Customer preferences and allergy are exist");
     }
-    //*********************************************************************************************
+
     @When("a chef prepares a meal for that customer")
     public void aChefPreparesAMealForThatCustomer() {
         System.out.println("Chef is preparing a meal");
     }
-//***************************************************************************************************
+
     @Then("the system displays their preferences to the chef for customization")
     public void theSystemDisplaysTheirPreferencesToTheChefForCustomization() {
         Assert.assertNotNull("Preferencesare not available to the chef",allergy );

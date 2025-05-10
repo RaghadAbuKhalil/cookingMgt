@@ -5,7 +5,6 @@ import org.database.DatabaseSetup;
 
 import java.sql.*;
 
-import static io.cucumber.core.gherkin.StepType.THEN;
 
 
 public class CustomMealService {
@@ -13,8 +12,8 @@ public class CustomMealService {
     private static CustomMealService instance;
 
     public static CustomMealService getInstance() {
-        if (instance == null) {  // Check if instance is already created
-            synchronized (CustomMealService.class) {  // Thread safety
+        if (instance == null) {
+            synchronized (CustomMealService.class) {
                 if (instance == null) {
                     instance = new CustomMealService();
                 }
@@ -186,14 +185,12 @@ else {
             String dietaryPreference = customerRs.getString("dietary");
             String allergies = customerRs.getString("allergies");
 
-            // Map dietary preference to inventory category
             String dietaryCategory = switch (dietaryPreference.toLowerCase()) {
                 case "vagen" -> "vegetarian";
                 case "non-vagen" -> "Non-vegetarian";
                 default -> throw new IllegalArgumentException("Unknown dietary preference: " + dietaryPreference);
             };
 
-            // Step 4: Find an alternative ingredient
             inventoryStmt.setString(1, dietaryCategory);
             inventoryStmt.setString(2, allergies != null ? allergies : ""); // Handle null allergies
             ResultSet inventoryRs = inventoryStmt.executeQuery();
@@ -226,68 +223,5 @@ else {
 
 
 
-
-
-
-         /*   String query = """
-        SELECT name
-        FROM inventory
-        WHERE status = 'available' 
-        AND dietary_category = (
-            SELECT 
-                CASE dietary
-                    WHEN 'vegan' THEN 'Vegetarian'
-                    WHEN 'Non-vegan' THEN 'Non-Vegetarian'
-                END
-            FROM customer_preferences
-            WHERE customer_id = (
-                SELECT customer_id 
-                FROM custom_meals 
-                WHERE meal_id = ?
-            )
-        )
-        AND ingredient_id NOT IN (
-            SELECT ingredient_id 
-            FROM inventory
-            WHERE name IN (
-                SELECT allergies
-                FROM customer_preferences
-                WHERE customer_id = (
-                    SELECT customer_id 
-                    FROM custom_meals 
-                    WHERE meal_id = ?
-                )
-            )
-        )
-        ORDER BY RANDOM()
-        LIMIT 1;
-    """;
-
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-
-                // Set the mealId for dietary preferences and allergies
-                stmt.setInt(1, mealId);
-                stmt.setInt(2, mealId);
-
-                // Execute the query
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    // Get the suggested ingredient
-                    String suggested = rs.getString("name");
-                    System.out.println("Suggested alternative for " + ing + ": " + suggested);
-                    return suggested;
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error suggesting alternative ingredient.", e);
-            }
-
-            // If no alternative is found
-            System.out.println("Unable to suggest an alternative for " + ing + " at this time.");
-            return null;
-        }*/
 
 

@@ -3,7 +3,6 @@ package org;
 import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;

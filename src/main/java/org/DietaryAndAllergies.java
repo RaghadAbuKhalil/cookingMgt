@@ -3,9 +3,7 @@ package org;
 import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
-import javax.swing.*;
 import java.sql.*;
-import java.util.Locale;
 
 public class DietaryAndAllergies {
     public static MealAllergyChecker mealAllergyChecker1 = new MealAllergyChecker();
@@ -39,7 +37,6 @@ public class DietaryAndAllergies {
 
     }
 
-    // Get allergies for a specific customer
     public static String getCustomerAllergies(int customerId) {
         String sql = "SELECT allergies FROM customer_preferences WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -74,7 +71,6 @@ public class DietaryAndAllergies {
         return null;
     }
 
-    // Check if the meal contains allergens for the customer
     public static boolean checkAllergies(int customerId, String meal) {
         String allergies = getCustomerAllergies(customerId);
 

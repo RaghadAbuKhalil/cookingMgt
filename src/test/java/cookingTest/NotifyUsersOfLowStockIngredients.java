@@ -28,15 +28,6 @@ public class NotifyUsersOfLowStockIngredients {
     @Given("multiple ingredients are below the stock threshold")
     public void multiple_ingredients_are_below_the_stock_threshold() {
         service = InventoryService.getInstance();
-       /* try {
-
-         //   service.addOrUpdateIngredient(new Ingredient("tomato", "available", "vegetarian", 2));
-           // service.addOrUpdateIngredient(new org.Ingredient("carrot", "available", "vegetarian", 1));
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
         logger.info("Low-stock ingredients added.");
     }
 
@@ -65,12 +56,6 @@ public class NotifyUsersOfLowStockIngredients {
     @Given("there are low-stock ingredients in the inventory")
     public void there_are_low_stock_ingredients_in_the_inventory() {
         service = InventoryService.getInstance();
-      /*  try {
-
-            service.addOrUpdateIngredient(new Ingredient("Salmon", "available", "Non-vegetarian", 4));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 
     @When("the system generates alerts")
