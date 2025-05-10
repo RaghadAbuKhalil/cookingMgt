@@ -5,6 +5,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.KitchenManagerService;
 import org.OrderHistoryService;
 import org.junit.Assert;
 
@@ -17,17 +18,21 @@ public class trackPastPOdersAndPersonalizedMealPlans {
     private List<String> orderedlist;
     String reorderMessage;
     Map<String, Integer> thedemand;
-    // تهيئة الكائن باستخدام Singleton
+    private KitchenManagerService maneger;
+    int price=50;
+    String date="2025 05 06";
     @Before
     public void setup() {
-        this.orderService = OrderHistoryService.getInstance(); // استخدام الكائن الوحيد (Singleton)
+        this.orderService = OrderHistoryService.getInstance();
+        this.maneger = KitchenManagerService.getInstance();
     }
 
     @Given("a customer has previously placed meal orders")
     public void a_customer_has_previously_placed_meal_orders() {
 
-        orderService.storeOrder(1, "Vegan Salad");
-        orderService.storeOrder(1, "Pasta");
+        maneger.insertOrder(1, "Vegan Salad",price,date);
+        maneger.insertOrder(1, "meet",price,date);
+
     }
 
     @When("they navigate to their order history page")
@@ -43,12 +48,12 @@ public class trackPastPOdersAndPersonalizedMealPlans {
 
     @And("the customer can reorder any past meal with a single click")
     public void the_customer_can_reorder_any_past_meal_with_a_single_click() {
-        reorderMessage = orderService.reorderMeal(1, "Pasta");
-        Assert.assertEquals("Meal reordered successfully Pasta", reorderMessage);
+        reorderMessage = orderService.reorderMeal(1, "meet",price,date);
+        Assert.assertEquals("Meal reordered successfully meet", reorderMessage);
         System.out.println(reorderMessage);
     }
 
-//******************************************************
+
     @Given("a chef wants to suggest a meal plan,")
     public void aChefWantsToSuggestAMealPlan() {
 
@@ -91,7 +96,7 @@ public class trackPastPOdersAndPersonalizedMealPlans {
     @And("the administrator can analyze data to improve service offerings")
     public void theAdministratorCanAnalyzeDataToImproveServiceOfferings() {
        // Map<String, Integer> trends = orderService.analyzeOrderTrends();
-        if (thedemand.get("Vegan Salad") > 3) {  // إذا كانت هناك وجبة Vegan Salad تم طلبها أكثر من مرتين، نقترح زيادة توفرها
+        if (thedemand.get("Vegan Salad") > 3) {
             System.out.println("Suggested action: Increase availability of vegan meals.");
         }
 

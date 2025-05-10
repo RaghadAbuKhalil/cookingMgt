@@ -6,8 +6,9 @@ import java.util.*;
 
 public class OrderHistoryService {
     private static OrderHistoryService instance;
-
+private KitchenManagerService kitchenManagerService;
     private OrderHistoryService() {
+        kitchenManagerService= new KitchenManagerService();
     }
 
     public static OrderHistoryService getInstance() {
@@ -21,7 +22,7 @@ public class OrderHistoryService {
         return instance;
     }
 
-    public int storeOrder(int customerId, String mealName) {
+   /* public int storeOrder(int customerId, String mealName) {
         String sql = "INSERT INTO ORDERS (customer_id, meal_name) VALUES (?, ?)";
         int orderId=-1;
         try (Connection conn = DatabaseConnection.getConnection();
@@ -46,7 +47,7 @@ public class OrderHistoryService {
             e.printStackTrace();
         }
         return orderId;
-    }
+    }*/
 
     public List<String> getOrderHistory(int customerId) {
         List<String> orderList = new ArrayList<>();
@@ -91,9 +92,9 @@ public class OrderHistoryService {
         return orderId;
     }
 
-    public String reorderMeal(int customerId, String mealName) {
+    public String reorderMeal(int customerId, String mealName,int price,String Date) {
         if (getOrderHistory(customerId).contains(mealName)) {
-            int newOrderId = storeOrderAndGetId(customerId, mealName);
+            int newOrderId = kitchenManagerService.insertOrder(customerId, mealName,price,Date);
             TaskManager.getInstance().assignTaskToChef(newOrderId, mealName);
             return "Meal reordered successfully " + mealName;
         }

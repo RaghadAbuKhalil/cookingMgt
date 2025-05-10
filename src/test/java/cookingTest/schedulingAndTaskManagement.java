@@ -41,9 +41,9 @@ public class schedulingAndTaskManagement {
 
     @Given("there are available chefs in the kitchen each chef has a defined workload and expertise level")
     public void thereAreAvailableChefsInTheKitchenEachChefHasADefinedWorkloadAndExpertiseLevel() {
-        chef1.addChef("chef1", "Beginner");
+        chef1.addChef("chef3", "Beginner");
         chef1.setChefJobload( chefid1,4);
-        chef1.addChef("chef2",  "Advanced Level");
+        chef1.addChef("chef4",  "Advanced Level");
         chef1.setChefJobload(chefid2,3);
         chef1.printAllChefs();
 
@@ -57,7 +57,7 @@ public class schedulingAndTaskManagement {
 
     @Then("the system should assign the task to the chef with the least workload and required expertise {string}")
     public void theSystemShouldAssignTheTaskToTheChefWithTheLeastWorkloadAndRequiredExpertise(String arg0) {
-         int chefid=kitchenManager1.assignTask(mealname,arg0);
+          chefid=kitchenManager1.assignTask(mealname,arg0);
         Assert.assertEquals( chefid,chefid2 );
 
     }
@@ -65,7 +65,7 @@ public class schedulingAndTaskManagement {
 
     @And("the chef should receive a notification about the new task")
     public void theChefShouldReceiveANotificationAboutTheNewTask() {
-       String notificationmsg = notification1.getChefNotifications(chefid);
+       String notificationmsg = notification1.getChefNotifications(chefid2);
 
         Assert.assertEquals("Chef receive notification", notificationmsg, mealname);
 
@@ -86,7 +86,7 @@ mealname=arg0;
     @Then("the chef should see the task notification in their task list")
     public void theChefShouldSeeTheTaskNotificationInTheirTaskList() {
 
-        notificationList= notification1.getNotificationsListForChef( chefid);
+        notificationList= notification1.getNotificationsListForChef( chefid2);
         Assert.assertNotNull("notification in their task list",notificationList.contains(mealname));
 
     }
@@ -94,8 +94,8 @@ mealname=arg0;
     @And("they should be able to acknowledge the task")
     public void theyShouldBeAbleToAcknowledgeTheTask() {
 
-        chef1.taskInProgress(chefid, mealname);
-        String status = taskmanager1.TaskStatus(mealname,chefid);
+        chef1.taskInProgress(chefid2, mealname);
+        String status = taskmanager1.TaskStatus(mealname,chefid2);
         Assert.assertEquals("started working on the task",status, "In Progress");
 
 
@@ -105,8 +105,8 @@ mealname=arg0;
     @Given("a chef has started working on the task {string}")
     public void aChefHasStartedWorkingOnTheTask(String arg0) {
     mealname=arg0;
-        chef1.taskInProgress(chefid, mealname);
-        String status = taskmanager1.TaskStatus(mealname,chefid);
+        chef1.taskInProgress(chefid2, mealname);
+        String status = taskmanager1.TaskStatus(mealname,chefid2);
         Assert.assertEquals("chef started working on the task",status, "In Progress");
 
 
@@ -114,19 +114,19 @@ mealname=arg0;
 
     @When("the chef marks the task as {string}")
     public void theChefMarksTheTaskAs(String arg0) {
-      chef1.completeTask(chefid, mealname);
+      chef1.completeTask(chefid2, mealname);
 
     }
 
     @Then("the system should update the task status in the kitchen dashboard")
     public void theSystemShouldUpdateTheTaskStatusInTheKitchenDashboard(){
-        String status = taskmanager1.TaskStatus(mealname,chefid);
+        String status = taskmanager1.TaskStatus(mealname,chefid2);
         Assert.assertEquals("the chef marks the task as completed",status, "Completed");
 }
 
 @And("the kitchen manager should be able to see the updated progress")
     public void theKitchenManagerShouldBeAbleToSeeTheUpdatedProgress() {
-    String taskStatus = kitchenManager1.getTaskStatusForKitchenManager(mealname,chefid);
+    String taskStatus = kitchenManager1.getTaskStatusForKitchenManager(mealname,chefid2);
     Assert.assertEquals("Kitchen Manager should see 'Completed' status", "Completed", taskStatus);
     }
 
