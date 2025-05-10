@@ -1,0 +1,29 @@
+[33mba1e799[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mhiba[m[33m)[m HEAD@{0}: commit (merge): Merge remote-tracking branch 'origin/raghad' into hiba
+[33mc199eb8[m[33m ([m[1;31morigin/hiba[m[33m)[m HEAD@{1}: commit: feature1.2
+[33m4499cf2[m HEAD@{2}: rebase (abort): returning to refs/heads/hiba
+[33m432465d[m HEAD@{3}: rebase (start): checkout refs/heads/raghad
+[33m4499cf2[m HEAD@{4}: merge origin/raghad: Fast-forward
+[33me5bfe31[m HEAD@{5}: merge origin/raghad: Fast-forward
+[33m0c0ea0f[m HEAD@{6}: commit: feature1.2
+[33mcacca80[m HEAD@{7}: checkout: moving from raghad to hiba
+[33md789f5a[m[33m ([m[1;32mraghad[m[33m)[m HEAD@{8}: checkout: moving from hiba to raghad
+[33mcacca80[m HEAD@{9}: checkout: moving from hiba to hiba
+[33mcacca80[m HEAD@{10}: branch: Reset to origin/hiba
+[33ma1339f2[m HEAD@{11}: commit: 1stfeature
+[33md789f5a[m[33m ([m[1;32mraghad[m[33m)[m HEAD@{12}: reset: moving to origin/raghad
+[33me9871c4[m HEAD@{13}: commit (merge): Fixed merge conflict in pom.xml
+[33m3c19ef0[m HEAD@{14}: commit: testfirst
+[33md6644b2[m HEAD@{15}: commit: testfirst
+[33m2fbe49c[m HEAD@{16}: commit (merge): testfirst
+[33m1a66700[m HEAD@{17}: commit: حفظ التعديلات قبل السحب من GitHub
+[33m261c4b3[m HEAD@{18}: commit (merge): Merged remote repository with local
+[33m84251bf[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{19}: checkout: moving from master to hiba
+[33m84251bf[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{20}: commit: testfirst
+[33meeaf843[m HEAD@{21}: rebase (finish): returning to refs/heads/master
+[33meeaf843[m HEAD@{22}: rebase (continue): Initial commit
+[33m2e5990e[m HEAD@{23}: rebase (pick): Initial commit
+[33m28c5aea[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{24}: rebase (start): checkout refs/remotes/origin/hiba
+[33m778a5bc[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{25}: checkout: moving from master to master
+[33m778a5bc[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{26}: branch: Reset to origin/master
+[33m778a5bc[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{27}: commit (merge): Merged remote repository with local
+[33mf92ebc1[m HEAD@{28}: commit (initial): Initial commit
