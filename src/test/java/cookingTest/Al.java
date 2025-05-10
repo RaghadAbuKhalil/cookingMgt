@@ -17,7 +17,6 @@ public class Al {
         private int time;
         private String recommendedRecipe;
 
-        // قاعدة بيانات للوصفات
         private static class Recipe {
             String name;
             List<String> ingredients;
@@ -62,7 +61,7 @@ public class Al {
             for (Recipe recipe : recipeDatabase) {
                 List<String> requiredIngredients = recipe.ingredients.stream()
                         .map(String::toLowerCase)
-                        .filter(i -> !i.equals("olive oil")) // السماح بتجاهل زيت الزيتون
+                        .filter(i -> !i.equals("olive oil"))
                         .toList();
 
                 if (recipe.dietaryRestriction.equalsIgnoreCase(dietaryRestriction)

@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationService {
-    // إرسال إشعار للطاهٍ
+
     private static NotificationService instance;
-  //  private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
 
     public NotificationService() {
-        // Private constructor to prevent instantiation
+
     }
 
     public static NotificationService getInstance() {
@@ -89,7 +88,7 @@ public class NotificationService {
         return notificationsList;
     }
     public synchronized void sendChefRemindersForTomorrow() throws InterruptedException {
-     //   Thread.sleep(500); // نصف ثانية
+
 
         String query = "SELECT t.task_name, t.chef_id " +
                 "FROM tasks t " +

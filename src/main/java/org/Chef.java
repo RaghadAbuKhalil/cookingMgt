@@ -105,17 +105,4 @@ public class Chef {
         }
     }
 
-
-    public boolean chefExists(int chefId) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT 1 FROM CHEFS WHERE chef_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, chefId);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

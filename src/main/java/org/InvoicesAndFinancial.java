@@ -127,54 +127,6 @@ public class InvoicesAndFinancial {
             return email;
         }
 
-    public void sendInvoiceByEmail(int orderId) {
-        String invoice = generateInvoiceText(orderId);
-        String email = null;
-        String query = "SELECT c.email FROM orders o JOIN customer_preferences c ON o.customer_id = c.customer_id WHERE o.order_id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, orderId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                email = rs.getString("email");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        if (email != null && !invoice.isEmpty()) {
-            sendInvoiceEmail(email, "Your Invoice", invoice);
-        }
-    }
-    public String generateInvoiceText(int orderId) {
-        String invoice = "";
-        String query = "SELECT o.order_id, o.meal_name, o.price, o.order_date, c.name, c.email " +
-                "FROM orders o JOIN customer_preferences c ON o.customer_id = c.customer_id " +
-                "WHERE o.order_id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, orderId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                invoice += "Invoice for Order #" + rs.getInt("order_id") + "\n";
-                invoice += "Customer: " + rs.getString("name") + "\n";
-                invoice += "Email: " + rs.getString("email") + "\n";
-                invoice += "Meal: " + rs.getString("meal_name") + "\n";
-                invoice += "Price: $" + rs.getDouble("price") + "\n";
-                invoice += "Date: " + rs.getString("order_date") + "\n";
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return invoice;
-    }
 
 
 

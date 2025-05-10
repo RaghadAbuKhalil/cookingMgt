@@ -9,7 +9,7 @@ import java.util.Locale;
 public class DietaryAndAllergies {
     public static MealAllergyChecker mealAllergyChecker1 = new MealAllergyChecker();
     private static OrderHistoryService instance;
-    private static final String URL = "jdbc:sqlite:database.db";  // استخدام وضع التخزين الدائم
+    private static final String URL = "jdbc:sqlite:database.db";
 
 
     private static final String USER = "sa";

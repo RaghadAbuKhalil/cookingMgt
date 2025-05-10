@@ -22,32 +22,6 @@ private KitchenManagerService kitchenManagerService;
         return instance;
     }
 
-   /* public int storeOrder(int customerId, String mealName) {
-        String sql = "INSERT INTO ORDERS (customer_id, meal_name) VALUES (?, ?)";
-        int orderId=-1;
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, customerId);
-            stmt.setString(2, mealName);
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                       orderId = generatedKeys.getInt(1);
-                        System.out.println("Order stored with ID: " + orderId);
-                        TaskManager.getInstance().assignTaskToChef(orderId, mealName);
-                    }
-                }
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return orderId;
-    }*/
 
     public List<String> getOrderHistory(int customerId) {
         List<String> orderList = new ArrayList<>();

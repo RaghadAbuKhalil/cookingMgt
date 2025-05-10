@@ -95,7 +95,7 @@ public class trackPastPOdersAndPersonalizedMealPlans {
 
     @And("the administrator can analyze data to improve service offerings")
     public void theAdministratorCanAnalyzeDataToImproveServiceOfferings() {
-       // Map<String, Integer> trends = orderService.analyzeOrderTrends();
+
         if (thedemand.get("Vegan Salad") > 3) {
             System.out.println("Suggested action: Increase availability of vegan meals.");
         }
