@@ -30,12 +30,15 @@ public class CustomMealService {
     public boolean addIngredient(int mealId, String ingr) {
 
 
-        String check = "SELECT ingredient_id,dietary_category FROM inventory WHERE name = ? AND status = 'available'";
-        String insert = "INSERT INTO custom_meal_ingredients (meal_id" +
-                ", ingredient_id, quantity) VALUES (?, ?, 1)";
-        String checkIncompatabile = "SELECT COUNT(*) FROM incompatible_ingredients WHERE (ingredient1 = ? OR ingredient2 = ?) " +
-                "AND (ingredient1 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?) " +
-                "OR ingredient2 IN (SELECT ingredient_id FROM custom_meal_ingredients WHERE meal_id = ?))";
+        String check = "SELECT dietary_category ,ingredient_id FROM inventory WHERE name = ? AND status = 'available'";
+        String insert = "INSERT INTO custom_meal_ingredients (mealId" +
+                ", ingredientName) VALUES (?, ?)";
+        String checkIncompatible = "SELECT COUNT(*) FROM incompatible_ingredients "
+                + "WHERE ((ingredient1 = ? OR ingredient2 = ?) "
+                + "AND (ingredient1 IN (SELECT ingredientName FROM custom_meal_ingredients WHERE mealId = ?) "
+                + "OR ingredient2 IN (SELECT ingredientName FROM custom_meal_ingredients WHERE mealId = ?)))";
+
+
 
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -47,7 +50,8 @@ public class CustomMealService {
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
-                int ingredientId = rs.getInt("ingredient_id");
+
+                 int  ingredientId = rs.getInt("ingredient_id");
 
                 String category = rs.getString("dietary_category");
                 if (!checkAllergiesAndDietary(mealId, ingr, category)) {
@@ -57,9 +61,9 @@ public class CustomMealService {
 
 else {
                     System.out.println("Ingredient available: " + ingr);
-                    try (PreparedStatement stmt = conn.prepareStatement(checkIncompatabile)) {
-                        stmt.setInt(1, ingredientId);
-                        stmt.setInt(2, ingredientId);
+                    try (PreparedStatement stmt = conn.prepareStatement(checkIncompatible)) {
+                        stmt.setString(1, ingr);
+                        stmt.setString(2, ingr);
                         stmt.setInt(3, mealId);
                         stmt.setInt(4, mealId);
                         ResultSet rs1 = stmt.executeQuery();
@@ -74,7 +78,7 @@ else {
                     try (
                             PreparedStatement insertStmt = conn.prepareStatement(insert)) {
                         insertStmt.setInt(1, mealId);
-                        insertStmt.setInt(2, ingredientId);
+                        insertStmt.setString(2, ingr);
                         insertStmt.executeUpdate();
                         System.out.println("Added: " + ingr);
                         conn.commit();
@@ -153,12 +157,12 @@ else {
                     )
                 """;
 
-        // Step 2: Query to find an alternative ingredient
         String inventoryQuery = """
                     SELECT name
                     FROM inventory
                     WHERE status = 'available'
                       AND dietary_category = ?
+           
                       AND name NOT IN (
                           SELECT name
                           FROM inventory
@@ -172,7 +176,6 @@ else {
              PreparedStatement customerStmt = conn.prepareStatement(customerQuery);
              PreparedStatement inventoryStmt = conn.prepareStatement(inventoryQuery)) {
 
-            // Step 3: Retrieve customer preferences
             customerStmt.setInt(1, mealId);
             ResultSet customerRs = customerStmt.executeQuery();
             if (!customerRs.next()) {
@@ -185,8 +188,8 @@ else {
 
             // Map dietary preference to inventory category
             String dietaryCategory = switch (dietaryPreference.toLowerCase()) {
-                case "vagen" -> "Vegetarian";
-                case "non-vagen" -> "Non-Vegetarian";
+                case "vagen" -> "vegetarian";
+                case "non-vagen" -> "Non-vegetarian";
                 default -> throw new IllegalArgumentException("Unknown dietary preference: " + dietaryPreference);
             };
 

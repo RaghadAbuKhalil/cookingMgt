@@ -3,6 +3,7 @@ package org;
 import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.Locale;
 
@@ -52,6 +53,9 @@ public class DietaryAndAllergies {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+
         return null;
     }
     public static String getCustomerPreferences(int customerId) {

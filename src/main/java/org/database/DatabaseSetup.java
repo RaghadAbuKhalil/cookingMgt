@@ -1,7 +1,12 @@
 package org.database;
 
-import java.sql.Connection;
-import java.sql.Statement;
+import org.Ingredient;
+import org.InventoryService;
+
+import javax.swing.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseSetup {
     public static void setupDatabase() {
@@ -26,13 +31,7 @@ public class DatabaseSetup {
                 "order_date DATE DEFAULT CURRENT_DATE,"+
                 "is_repeated BOOLEAN DEFAULT FALSE)";
 
-        String ingredients = "CREATE TABLE IF NOT EXISTS custom_meal_ingredients (" +
-                "meal_id INTEGER, " +
-                "ingredient_id INTEGER, " +
-                "quantity INTEGER DEFAULT 1, " +
-                "PRIMARY KEY (meal_id, ingredient_id), " +
-                "FOREIGN KEY (meal_id) REFERENCES custom_meals(meal_id), " +
-                "FOREIGN KEY (ingredient_id) REFERENCES inventory(ingredient_id))";
+
 
         String inventory = "CREATE TABLE IF NOT EXISTS inventory (" +
                 "ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -56,6 +55,11 @@ public class DatabaseSetup {
                 "FOREIGN KEY (chef_id) REFERENCES CHEFS(chef_id) ON DELETE SET NULL, " +
                 "FOREIGN KEY (order_id) REFERENCES ORDERS(order_id) ON DELETE SET NULL)";
 
+        String incompatible_ingredients   = "CREATE TABLE IF NOT EXISTS incompatible_ingredients ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "ingredient1 TEXT NOT NULL, "
+                + "ingredient2 TEXT NOT NULL"
+                + ")";
 
 
         String notifications = "CREATE TABLE IF NOT EXISTS notifications (" +
@@ -64,27 +68,88 @@ public class DatabaseSetup {
                 "task_name TEXT, " +
                 "status TEXT DEFAULT 'unacknowledged', " +
                 "FOREIGN KEY (chef_id) REFERENCES CHEFS(chef_id) ON DELETE SET NULL)";
-
+     String kitchenNotifications = "CREATE TABLE IF NOT EXISTS kitchen_notifications (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "message TEXT NOT NULL)";
+        String customMealIngredients = "CREATE TABLE IF NOT EXISTS custom_meal_ingredients ("
+                + "mealId INT NOT NULL, "
+                + "ingredientName VARCHAR(255) NOT NULL, "
+                + "PRIMARY KEY (mealId, ingredientName), "
+                + "FOREIGN KEY (mealId) REFERENCES meals(mealId)"
+                + ")";
+            String suppliers ="CREATE TABLE IF NOT EXISTS suppliers (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "ingredient_name TEXT NOT NULL," +
+                    "supplier_name TEXT NOT NULL," +
+                    "price REAL NOT NULL)";
+            String purchase_orders=  "CREATE TABLE IF NOT EXISTS purchase_orders (\n" +
+                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                     "    ingredient_name TEXT,\n" +
+                     "    quantity INTEGER,\n" +
+                     "    supplier_id INTEGER,\n" +
+                     "    status TEXT\n" +
+                     ");\n";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
             // تنفيذ الجمل الخاصة بإنشاء الجداول
             stmt.execute(customers);
             stmt.execute(custom);
-            stmt.execute(ingredients);
             stmt.execute(inventory);
             stmt.execute(chef); // يجب أن يتم إنشاء الجدول قبل "tasks"
             stmt.execute(task);
             stmt.execute(orders);
             stmt.execute(notifications);
-           ;
+            stmt.execute(kitchenNotifications);
+           stmt.execute(incompatible_ingredients);
+        stmt.executeUpdate(customMealIngredients);
+         stmt.execute(suppliers);
+         stmt.execute(purchase_orders);
 
-            // تفعيل المفاتيح الأجنبية في SQLite
-           // stmt.execute("PRAGMA foreign_keys = ON;");
+            stmt.execute("PRAGMA foreign_keys = ON;");
             System.out.println("Database created successfully");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+/*
+        try {
+           // InventoryService.addOrUpdateIngredient(new Ingredient("Olive Oil", "available", "vegetarian", 15));
+          /*  InventoryService.addOrUpdateIngredient(new Ingredient("chicken", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("rice", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("fish", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("Cheese", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("Strawberry", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("onion", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("salmon", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("tomato", "out of stock", "vegetarian", 3));
+            InventoryService.addOrUpdateIngredient(new Ingredient("banana", "out of stock", "vegetarian", 4));
+            InventoryService.addOrUpdateIngredient(new Ingredient("carrot", "out of stock", "vegetarian", 1));
+            InventoryService.addOrUpdateIngredient(new Ingredient("potato", "out of stock", "vegetarian", 2));
+
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("PRAGMA table_info(custom_meal_ingredients)");
+        while (rs.next()) {
+            System.out.println(rs.getString("name") + " - " + rs.getString("type"));
+        }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }*/
+
+
+       // String sql = "DROP TABLE IF EXISTS custom_meal_ingredients";
+
+
+
     }
 }

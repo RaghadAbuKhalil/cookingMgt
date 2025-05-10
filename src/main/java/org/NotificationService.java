@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationService {
-    // إرسال إشعار للطاهٍ
+
     private static NotificationService instance;
   //  private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
 

@@ -6,6 +6,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.CustomMealService;
+import org.Ingredient;
+import org.InventoryService;
 import org.database.DatabaseConnection;
 import org.junit.Assert;
 
@@ -24,8 +26,13 @@ private String ingredient;
     }
 
     @Given("a customer selects {string} for their custom meal")
-    public void aCustomerSelectsForTheirCustomMeal(String arg0) {
+    public void aCustomerSelectsForTheirCustomMeal(String arg0) throws SQLException {
         mealId =customMealService.createCustomMeal(1,"test alternative");
+
+          //  InventoryService.addOrUpdateIngredient(new Ingredient(arg0, "available", "Non-vegetarian", 15));
+           // InventoryService.addOrUpdateIngredient(new Ingredient("Grilled mushrooms", "available", "vegetarian", 15));
+            //InventoryService.addOrUpdateIngredient(new Ingredient("Grilled tofu", "available", "vegetarian", 15));
+
         customMealService.addIngredient(mealId,arg0);
         ingredient=arg0;
 
@@ -69,6 +76,11 @@ private String ingredient;
     @Given("a customer selects {string} which is restricted for their dietary preferences")
     public void aCustomerSelectsWhichIsRestrictedForTheirDietaryPreferences(String arg0) {
         mealId =customMealService.createCustomMeal(1,"test alternative1");
+       /* try {
+            InventoryService.addOrUpdateIngredient(new Ingredient(arg0, "available", "Non-vegetarian", 15));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }*/
         customMealService.addIngredient(mealId,arg0);
         ingredient=arg0;
 
