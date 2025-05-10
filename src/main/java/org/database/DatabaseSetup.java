@@ -1,12 +1,12 @@
 package org.database;
 
-import java.sql.*;
-import java.text.SimpleDateFormat;
+import java.sql.Connection;
+import java.sql.Statement;
 
 public class DatabaseSetup {
     public static void setupDatabase() {
         String customers = "CREATE TABLE IF NOT EXISTS customer_preferences (" +
-                "customer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "customer_id INTEGER PRIMARY KEY, " +
                 "dietary TEXT, " +
                 "email TEXT, " +
                 "allergies TEXT)";
@@ -20,13 +20,6 @@ public class DatabaseSetup {
 
 
 
-        String ingredients = "CREATE TABLE IF NOT EXISTS custom_meal_ingredients (" +
-                "meal_id INTEGER, " +
-                "ingredient_id INTEGER, " +
-                "quantity INTEGER DEFAULT 1, " +
-                "PRIMARY KEY (meal_id, ingredient_id), " +
-                "FOREIGN KEY (meal_id) REFERENCES custom_meals(meal_id), " +
-                "FOREIGN KEY (ingredient_id) REFERENCES inventory(ingredient_id))";
 
         String inventory = "CREATE TABLE IF NOT EXISTS inventory (" +
                 "ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -50,6 +43,11 @@ public class DatabaseSetup {
                 "FOREIGN KEY (chef_id) REFERENCES CHEFS(chef_id) ON DELETE SET NULL, " +
                 "FOREIGN KEY (order_id) REFERENCES ORDERS(order_id) ON DELETE SET NULL)";
 
+        String incompatible_ingredients   = "CREATE TABLE IF NOT EXISTS incompatible_ingredients ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "ingredient1 TEXT NOT NULL, "
+                + "ingredient2 TEXT NOT NULL"
+                + ")";
 
 
         String notifications = "CREATE TABLE IF NOT EXISTS notifications (" +
@@ -82,19 +80,46 @@ public class DatabaseSetup {
 
 
 
+     String kitchenNotifications = "CREATE TABLE IF NOT EXISTS kitchen_notifications (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "message TEXT NOT NULL)";
+        String customMealIngredients = "CREATE TABLE IF NOT EXISTS custom_meal_ingredients ("
+                + "mealId INT NOT NULL, "
+                + "ingredientName VARCHAR(255) NOT NULL, "
+                + "PRIMARY KEY (mealId, ingredientName), "
+                + "FOREIGN KEY (mealId) REFERENCES meals(mealId)"
+                + ")";
+            String suppliers ="CREATE TABLE IF NOT EXISTS suppliers (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "ingredient_name TEXT NOT NULL," +
+                    "supplier_name TEXT NOT NULL," +
+                    "price REAL NOT NULL)";
+            String purchase_orders=  "CREATE TABLE IF NOT EXISTS purchase_orders (\n" +
+                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                     "    ingredient_name TEXT,\n" +
+                     "    quantity INTEGER,\n" +
+                     "    supplier_id INTEGER,\n" +
+                     "    status TEXT\n" +
+                     ");\n";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
 
             stmt.execute(customers);
             stmt.execute(custom);
-            stmt.execute(ingredients);
+
             stmt.execute(inventory);
             stmt.execute(chef);
             stmt.execute(task);
             stmt.execute(orders);
             stmt.execute(notifications);
             stmt.execute(invoices);
+            stmt.execute(kitchenNotifications);
+           stmt.execute(incompatible_ingredients);
+        stmt.executeUpdate(customMealIngredients);
+         stmt.execute(suppliers);
+         stmt.execute(purchase_orders);
+
 
             stmt.execute("PRAGMA foreign_keys = ON;");
             System.out.println("Database created successfully");

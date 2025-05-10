@@ -1,20 +1,45 @@
 Feature: Suggest Ingredient Substitutions Based on Dietary Restrictions
 
-  Scenario: Suggest alternative for an allergen
-    Given a customer has a recorded allergy to nuts
-    When they try to add almonds to their custom meal
-    Then the system should suggest sunflower seeds as an alternative
-    And notify the chef about the substitution
+  As a customer, I want the system to suggest alternative ingredients if an ingredient is unavailable or does not fit my dietary restrictions, so that I can enjoy my meal without compromising my health.
 
-  Scenario: Recommend a substitute for an unavailable ingredient
-    Given a customer selects mushrooms for their pasta dish
-    When the system detects that mushrooms are out of stock
-    Then the system should suggest zucchini as an alternative
-    And ask the customer to confirm the substitution before proceeding
+  As a chef, I want to receive an alert when an ingredient substitution is applied so that I can approve or adjust the final recipe.
 
-  Scenario: Ensure ingredient substitutions follow dietary restrictions
-    Given a customer follows a vegan diet
-    When they select an ingredient that is not vegan, such as butter
-    Then the system should suggest a vegan alternative like margarine or olive oil
-    And confirm the change with the customer
+  # Scenario 1: Suggest Ingredient Substitutes Based on Availability
+  Scenario Outline: Suggest an alternative for an out-of-stock ingredient
+    Given a customer selects "<ingredient>" for their custom meal
+    And "<ingredient>" is out of stock
+    When the system checks for a suitable alternative
+    Then it should suggest  available alternative
+    And display a message: "Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
+
+    Examples:
+       |ingredient|
+       | tomato|
+
+
+
+  # Scenario 2: Suggest Ingredient Substitutes Based on Dietary Restrictions
+  Scenario Outline: Suggest alternative ingredients based on dietary restrictions
+    Given a customer selects "<ingredient>" which is restricted for their dietary preferences
+    When the system checks for a suitable alternative
+    Then it should suggest  ingredient that matches their dietary preferences
+    And display a message: "<Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
+
+    Examples:
+      | ingredient     |
+      | Fish           |
+      | Chicken        |
+
+
+
+  Scenario Outline: Suggest an alternative for an allergenic ingredient
+    Given a customer selects "<ingredient>" which is an allergen for them
+    When the system checks for a suitable alternative
+    Then it should suggest "<alternative>" that does not trigger any allergic reactions
+    And display a message: " Sorry! Cannot add <ingredient> to your custom meal, would you like to try "
+
+    Examples:
+      | ingredient |
+      | Strawberry   |
+
 

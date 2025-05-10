@@ -13,7 +13,7 @@ public class DatabaseConnection {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("PRAGMA journal_mode=WAL");
-            stmt.execute("PRAGMA busy_timeout = 3000"); // 3 ثواني انتظار إذا القاعدة مشغولة
+            stmt.execute("PRAGMA busy_timeout = 3000");
         } catch (SQLException e) {
             System.out.println("Error setting PRAGMA: " + e.getMessage());
         }

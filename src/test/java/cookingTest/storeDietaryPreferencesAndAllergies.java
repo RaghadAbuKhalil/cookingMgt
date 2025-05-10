@@ -18,15 +18,12 @@ public class storeDietaryPreferencesAndAllergies {
     private String  order;
     private String allergy =dietaryAndAllergies1.getCustomerAllergies(testId);
     private String preferences =dietaryAndAllergies1.getCustomerPreferences(testId);
-    private  static DietaryAndAllergies dietaryAndAllergies1;
-    @BeforeAll
-   private void setup(){
+    private  static DietaryAndAllergies dietaryAndAllergies1 ;
 
- dietaryAndAllergies1 = new DietaryAndAllergies();
-   }
 
     @Given("a customer wants to personalize their meal selection")
     public void aCustomerWantsToPersonalizeTheirMealSelection() {
+        dietaryAndAllergies1 =new DietaryAndAllergies();
         Assert.assertNotNull("the object of DietaryAndAllergies is not created ",dietaryAndAllergies1); // if obj not created msg appear if obj created 2nd msg aprrear
         System.out.println("Customer is personalizing meal selection");
 
@@ -53,12 +50,12 @@ public class storeDietaryPreferencesAndAllergies {
         Assert.assertTrue("allergy empty",!allergy.isEmpty());
         System.out.println("Customer preferences and allergy are exist");
     }
-    //*********************************************************************************************
+
     @When("a chef prepares a meal for that customer")
     public void aChefPreparesAMealForThatCustomer() {
         System.out.println("Chef is preparing a meal");
     }
-//***************************************************************************************************
+
     @Then("the system displays their preferences to the chef for customization")
     public void theSystemDisplaysTheirPreferencesToTheChefForCustomization() {
         Assert.assertNotNull("Preferencesare not available to the chef",allergy );

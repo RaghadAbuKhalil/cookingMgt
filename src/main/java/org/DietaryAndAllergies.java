@@ -4,38 +4,14 @@ import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
 import java.sql.*;
-import java.util.Locale;
 
 public class DietaryAndAllergies {
     public static MealAllergyChecker mealAllergyChecker1 = new MealAllergyChecker();
     private static OrderHistoryService instance;
     private static final String URL = "jdbc:sqlite:database.db";
 
-
-    private static final String USER = "sa";
-    private static final String PASSWORD = "";
     public DietaryAndAllergies() {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement()) {
-            conn.setAutoCommit(false);
-            String sql1 = "CREATE TABLE IF NOT EXISTS customers ( " +
-                    "customer_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "customer_name TEXT NOT NULL " +
-                    ");";
-
-            String sql2 = "CREATE TABLE IF NOT EXISTS customer_preferences (" +
-                    "customer_id INTEGER PRIMARY KEY, " +
-                    "dietary TEXT, " +
-                    "allergies TEXT, " +
-                    "FOREIGN KEY (customer_id) REFERENCES customers(customer_id)" +
-                    ");";
-            stmt.executeUpdate(sql1);
-            stmt.executeUpdate(sql2);
-            System.out.println("O");
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+     DatabaseSetup.setupDatabase();
     }
 
 
@@ -61,7 +37,6 @@ public class DietaryAndAllergies {
 
     }
 
-    // Get allergies for a specific customer
     public static String getCustomerAllergies(int customerId) {
         String sql = "SELECT allergies FROM customer_preferences WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -75,6 +50,9 @@ public class DietaryAndAllergies {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+
         return null;
     }
     public static String getCustomerPreferences(int customerId) {
@@ -93,7 +71,6 @@ public class DietaryAndAllergies {
         return null;
     }
 
-    // Check if the meal contains allergens for the customer
     public static boolean checkAllergies(int customerId, String meal) {
         String allergies = getCustomerAllergies(customerId);
 
@@ -115,12 +92,7 @@ public class DietaryAndAllergies {
     }
 
     public static void main(String[] args) {
-        // Insert some test data
-        setCustomerPreferences(1, "Vegan", "Nuts");
-        setCustomerPreferences(2, "Halal", "None");
 
-        // Check allergy warnings
-        checkAllergies(1, "Pasta");
     }
 
 }

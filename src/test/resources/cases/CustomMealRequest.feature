@@ -18,5 +18,10 @@ Feature: Allow Customers to Create Custom Meal Requests
     Given a customer selects an ingredient for their custom meal
     When the system detects that the ingredient is out of stock
     Then it should notify the customer
-    And suggest an alternative if available
+
+  Scenario: Notify chef when an alternative ingredient is suggested
+    Given a customer created a custom meal
+    And the customer tries to add "chicken" which is not suitable
+    When the system suggests an alternative ingredient
+    Then the chef is alerted with the substitution
 
