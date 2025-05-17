@@ -54,7 +54,7 @@ public class UpcomingOrdersAndDeliveries {
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                customerId = rs.getInt(1); // تحديث قيمة customerId المتغيرة
+                customerId = rs.getInt(1);
                 System.out.println("Customer inserted successfully. Generated ID: " + customerId);
             }
         } catch (SQLException e) {
@@ -90,7 +90,7 @@ public class UpcomingOrdersAndDeliveries {
     @Given("a cooking task is scheduled for tomorrow")
     public void aCookingTaskIsScheduledForTomorrow() {
         String taskDate = LocalDate.now().plusDays(1).toString();
-       chefid=  manager.assignTaskToChef(orderId,mealName);
+        chefid=  manager.assignTaskToChef(orderId,mealName);
     }
 
     @And("the chef is assigned to that task")
@@ -101,12 +101,12 @@ public class UpcomingOrdersAndDeliveries {
     @When("the system runs the daily reminder job")
     public void theSystemRunsTheDailyReminderJob() throws InterruptedException {
         synchronized (this) {
-        notification.sendChefRemindersForTomorrow();
-    }}
+            notification.sendChefRemindersForTomorrow();
+        }}
 
     @Then("the chef should receive a notification with the meal details and preparation time")
     public void theChefShouldReceiveANotificationWithTheMealDetailsAndPreparationTime() {
-     notificationList=   notification.getNotificationsListForChef(chefid);
+        notificationList=   notification.getNotificationsListForChef(chefid);
         Assert.assertNotNull("notification in their task list",notificationList.contains(mealName));
     }
 
@@ -114,9 +114,9 @@ public class UpcomingOrdersAndDeliveries {
     public void thereAreNoDeliveriesOrCookingTasksScheduledInTheNextHours(int arg0) {
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
-        stmt.executeUpdate("DELETE FROM tasks");
-        stmt.executeUpdate("DELETE FROM orders");
-        stmt.executeUpdate("DELETE FROM notifications");}
+            stmt.executeUpdate("DELETE FROM tasks");
+            stmt.executeUpdate("DELETE FROM orders");
+            stmt.executeUpdate("DELETE FROM notifications");}
         catch (SQLException e) {
             throw new RuntimeException(e);
         }

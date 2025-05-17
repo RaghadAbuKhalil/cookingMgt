@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.DietaryAndAllergies.setCustomerPreferences;
 import static org.junit.Assert.*;
 
 public class CustomMealRequest {
@@ -35,6 +36,7 @@ public class CustomMealRequest {
     }
     @Given("a customer wants to create a custom meal")
     public void aCustomerWantsToCreateACustomMeal() {
+
 
         mealId = customMealService.createCustomMeal(testCustomerId,"new meal");
 
@@ -220,6 +222,7 @@ if (!checkAddingIng)    System.out.println("An attempt to add uncompilable  or u
 
     @Given("a customer created a custom meal")
     public void aCustomerWithIDCreatedACustomMeal() {
+       testCustomerId= setCustomerPreferences("vegan","strawberry");
         mealId = customMealService.createCustomMeal(testCustomerId, "Vegan Delight");
         assertTrue("Meal should be created", mealId > 0);
     }

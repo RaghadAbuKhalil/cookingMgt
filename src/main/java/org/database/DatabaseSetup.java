@@ -20,12 +20,13 @@ public class DatabaseSetup {
 
 
 
-
         String inventory = "CREATE TABLE IF NOT EXISTS inventory (" +
                 "ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT UNIQUE NOT NULL, " +
                 "status TEXT CHECK (status IN ('available', 'out of stock')) NOT NULL DEFAULT 'available', " +
-                "dietary_category TEXT NOT NULL)";
+                "dietary_category TEXT NOT NULL, " +
+                "quantity INTEGER NOT NULL DEFAULT 0" +
+                ")";
 
         String chef = "CREATE TABLE IF NOT EXISTS CHEFS (" +
                 "chef_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -89,11 +90,7 @@ public class DatabaseSetup {
                 + "PRIMARY KEY (mealId, ingredientName), "
                 + "FOREIGN KEY (mealId) REFERENCES meals(mealId)"
                 + ")";
-            String suppliers ="CREATE TABLE IF NOT EXISTS suppliers (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "ingredient_name TEXT NOT NULL," +
-                    "supplier_name TEXT NOT NULL," +
-                    "price REAL NOT NULL)";
+            String suppliers ="CREATE TABLE IF NOT EXISTS suppliers (id INTEGER PRIMARY KEY AUTOINCREMENT,ingredient_name TEXT NOT NULL,supplier_name TEXT NOT NULL,price REAL,UNIQUE(ingredient_name, supplier_name));";
             String purchase_orders=  "CREATE TABLE IF NOT EXISTS purchase_orders (\n" +
                      "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                      "    ingredient_name TEXT,\n" +
@@ -101,6 +98,16 @@ public class DatabaseSetup {
                      "    supplier_id INTEGER,\n" +
                      "    status TEXT\n" +
                      ");\n";
+            String menu = "CREATE TABLE  IF NOT EXISTS menu_items (\n" +
+                    "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                    "    name TEXT UNIQUE NOT NULL\n" +
+                    ");\n";
+            String meal_ingredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
+                    "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                    "    menu_item_id INTEGER,\n" +
+                    "    ingredient TEXT NOT NULL,\n" +
+                    "    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)\n" +
+                    ");\n";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
@@ -108,7 +115,7 @@ public class DatabaseSetup {
             stmt.execute(customers);
             stmt.execute(custom);
 
-            stmt.execute(inventory);
+           stmt.execute(inventory);
             stmt.execute(chef);
             stmt.execute(task);
             stmt.execute(orders);
@@ -119,10 +126,13 @@ public class DatabaseSetup {
         stmt.executeUpdate(customMealIngredients);
          stmt.execute(suppliers);
          stmt.execute(purchase_orders);
-
+   stmt.execute(menu);
+   stmt.execute(meal_ingredients);
 
             stmt.execute("PRAGMA foreign_keys = ON;");
-            System.out.println("Database created successfully");
+          //  System.out.println("Database created successfully");
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -20,7 +20,7 @@ public class trackPastPOdersAndPersonalizedMealPlans {
     Map<String, Integer> thedemand;
     private KitchenManagerService maneger;
     int price=50;
-    String date="2025 05 06";
+    String date="2025-05-06";
     @Before
     public void setup() {
         this.orderService = OrderHistoryService.getInstance();

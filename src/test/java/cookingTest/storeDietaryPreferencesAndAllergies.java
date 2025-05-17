@@ -7,37 +7,50 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.DietaryAndAllergies;
+import org.KitchenManagerService;
 import org.junit.Assert;
 
-
+import java.awt.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class storeDietaryPreferencesAndAllergies {
-    private final int testId = 1;
+    private int testId ;
     private boolean   warningMsg=false;
     private String  order;
-    private String allergy =dietaryAndAllergies1.getCustomerAllergies(testId);
-    private String preferences =dietaryAndAllergies1.getCustomerPreferences(testId);
-    private  static DietaryAndAllergies dietaryAndAllergies1 ;
+    private String allergy;
+    private String preferences ;
+    private   DietaryAndAllergies dietaryAndAllergies1 ;
 
-
-    @Given("a customer wants to personalize their meal selection")
-    public void aCustomerWantsToPersonalizeTheirMealSelection() {
-        dietaryAndAllergies1 =new DietaryAndAllergies();
-        Assert.assertNotNull("the object of DietaryAndAllergies is not created ",dietaryAndAllergies1); // if obj not created msg appear if obj created 2nd msg aprrear
+@Before
+public  void setup(){
+    if (dietaryAndAllergies1 == null) {
+        dietaryAndAllergies1 = DietaryAndAllergies.getInstance();
+        Assert.assertNotNull("the object of DietaryAndAllergies is not created ", dietaryAndAllergies1);
         System.out.println("Customer is personalizing meal selection");
+        testId= DietaryAndAllergies.setCustomerPreferences("vegan","strawberry");
+        allergy =DietaryAndAllergies.getCustomerAllergies(testId);
+        preferences =DietaryAndAllergies.getCustomerPreferences(testId);
 
     }
+}
+    @Given("a customer wants to personalize their meal selection")
+    public void aCustomerWantsToPersonalizeTheirMealSelection() {
+
+       }
     @When("they enter their dietary preferences and allergies into the system")
     public void theyEnterTheirDietaryPreferencesAndAllergiesIntoTheSystem() {
-        dietaryAndAllergies1. setCustomerPreferences(testId,"vagen","strawberry");
+
         Assert.assertNotNull("the customer does not store his allergy",allergy);
         Assert.assertNotNull("the customer does not store his Preferences",preferences);
         System.out.println("Dietary preferences : " +preferences+ " and allergies :"+allergy);
     }
     @Then("the system stores the preferences and ensures future orders comply with them")
     public void theSystemStoresThePreferencesAndEnsuresFutureOrdersComplyWithThem() {
-        Assert.assertTrue("Preferences should be stored",preferences.equals("vagen"));
+        Assert.assertTrue("Preferences should be stored",preferences.equals("vegan"));
         Assert.assertTrue("Allergies should be stored",allergy.equals("strawberry"));
         System.out.println("Preferences and Allergies successfully saved.");
     }
@@ -75,9 +88,10 @@ public class storeDietaryPreferencesAndAllergies {
 
     @When("they try to order a dish containing his allergy")
     public void orderADishContainingHisAllergy() {
-        order = "Strawberry CAKE";
-        warningMsg = dietaryAndAllergies1.checkAllergies(1,order);
+          order="Strawberry CAKE";
+        warningMsg = DietaryAndAllergies.checkAllergies(testId ,order);
         System.out.println("Customer attempts to order: " + order);
+
     }
 
 
@@ -85,7 +99,10 @@ public class storeDietaryPreferencesAndAllergies {
     @Then("the system warns them and suggests an alternative")
     public void system_warns_customer() {
         Assert.assertTrue("Warning should be displayed", warningMsg);
-        System.out.println("Warning: This dessert contains allergens! Suggested alternative: chocolate cupcake.");
+        String alternative = KitchenManagerService.findAlternative(testId);
+        Assert.assertNotNull("Sorry! their is no alternative for this meal",alternative);
+        Assert.assertFalse(alternative.isEmpty());
+        System.out.println("Warning: This dessert contains allergens! Suggested alternative: "+alternative);
     }
     public void theSystemWarnsThemAndSuggestsAnAlternative() {
 

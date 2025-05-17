@@ -20,7 +20,7 @@ public class Supplier {
     }
         public void addOrUpdateSupplierPrice( String ingredient, String supplierName, double price) throws SQLException {
 
-            String sql = "INSERT INTO suppliers (ingredient_name, supplier_name, price) " +
+            String sql =  "INSERT INTO suppliers (ingredient_name, supplier_name, price) " +
                     "VALUES (?, ?, ?) " +
                     "ON CONFLICT(ingredient_name, supplier_name) " +
                     "DO UPDATE SET price = excluded.price";

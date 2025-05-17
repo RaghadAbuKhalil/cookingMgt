@@ -6,36 +6,56 @@ import org.database.DatabaseSetup;
 import java.sql.*;
 
 public class DietaryAndAllergies {
-    public static MealAllergyChecker mealAllergyChecker1 = new MealAllergyChecker();
-    private static OrderHistoryService instance;
-    private static final String URL = "jdbc:sqlite:database.db";
 
+    private static DietaryAndAllergies instance;
+
+
+
+    public static DietaryAndAllergies getInstance() {
+        if (instance == null) {
+            synchronized (DietaryAndAllergies.class) {
+                if (instance == null) {
+                    instance = new DietaryAndAllergies();
+                }
+            }
+        }
+        return instance;
+    }
     public DietaryAndAllergies() {
      DatabaseSetup.setupDatabase();
+
     }
 
 
-
-    public static void setCustomerPreferences(int customerId, String dietary, String allergies) {
-        String sql = "INSERT INTO customer_preferences (customer_id, dietary, allergies) VALUES (?, ?, ?) " +
-                "ON CONFLICT(customer_id) DO UPDATE SET dietary = excluded.dietary, allergies = excluded.allergies";
+    public static int setCustomerPreferences(String dietary, String allergies) {
+        String sql = "INSERT INTO customer_preferences (dietary, allergies) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             conn.setAutoCommit(false);
-            stmt.setInt(1, customerId);
-            stmt.setString(2, dietary.toLowerCase());
-            stmt.setString(3, allergies.toLowerCase());
+
+            stmt.setString(1, dietary.toLowerCase());
+            stmt.setString(2, allergies.toLowerCase());
             stmt.executeUpdate();
-            System.out.println("Customer preferences saved successfully!");
+
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            int customerId = -1;
+            if (generatedKeys.next()) {
+                customerId = generatedKeys.getInt(1);
+            }
+
             conn.commit();
+            System.out.println("Customer preferences saved successfully! ID = " + customerId);
+            return customerId;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        return -1;
     }
+
 
     public static String getCustomerAllergies(int customerId) {
         String sql = "SELECT allergies FROM customer_preferences WHERE customer_id = ?";
@@ -73,22 +93,28 @@ public class DietaryAndAllergies {
 
     public static boolean checkAllergies(int customerId, String meal) {
         String allergies = getCustomerAllergies(customerId);
-
-        if (meal == null || !mealAllergyChecker1.getMealIngredients().containsKey(meal)) {
-            System.out.println("Error: Meal not found or null.");
-            return false;
-        }
-
         if (allergies == null || allergies.isEmpty()) {
-            System.out.println("No allergies specified.");
             return false;
         }
+        String ingredientsQuery = "SELECT ingredient FROM meal_ingredients " +
+                "WHERE menu_item_id = (SELECT id FROM menu_items WHERE name = ?)";
 
-        boolean containsAllergen = mealAllergyChecker1.getMealIngredients().get(meal).contains(allergies);
-        if (containsAllergen) {
-            System.out.println(" Warning: The meal contains an allergen: " + allergies);
+        try ( Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement ingredientsStmt = conn.prepareStatement(ingredientsQuery)) {
+            ingredientsStmt.setString(1,meal);
+            try (ResultSet rs = ingredientsStmt.executeQuery()) {
+                while (rs.next()) {
+                    String ingredient = rs.getString("ingredient").toLowerCase();
+                    if (ingredient.contains(allergies)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
-        return containsAllergen;
+
+    return false ;
     }
 
     public static void main(String[] args) {

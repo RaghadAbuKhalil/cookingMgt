@@ -3,6 +3,7 @@ package org;
 import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
+import javax.swing.*;
 import java.sql.*;
 
 
@@ -24,6 +25,30 @@ public class CustomMealService {
 
     private CustomMealService() {
         DatabaseSetup.setupDatabase();
+        try {
+            InventoryService.addOrUpdateIngredient(new Ingredient("tomato", "out of stock", "vegetarian", 3));
+            InventoryService.addOrUpdateIngredient(new Ingredient("rice", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("broccoli", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("strawberry", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("chicken", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("fish", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("apple ", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("mushroom", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("veal ", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("cheese ", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient(" Olive Oil", "available", "vegetarian", 15));
+
+
+
+
+
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     public boolean addIngredient(int mealId, String ingr) {
@@ -100,6 +125,7 @@ else {
 
     private boolean checkAllergiesAndDietary(int mealId, String ingr, String category) {
         String checkAllergies = "SELECT dietary, allergies FROM customer_preferences WHERE customer_id = (SELECT customer_id FROM custom_meals WHERE meal_id = ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement insertStmt = conn.prepareStatement(checkAllergies)) {
             conn.setAutoCommit(false);
@@ -112,10 +138,11 @@ else {
                     System.out.println("Customer has an  allergy to " + ingr);
                     return false;
                 }
-                if (dietary.equals("vagen") && category.toLowerCase().equals("Non-vegetarian".toLowerCase())) {
-                    System.out.println(ingr + " is not suitable a vegen diet.");
+                if (dietary.equals("vegan") && category.toLowerCase().equals("Non-vegetarian".toLowerCase())) {
+                    System.out.println(ingr + " is not suitable a vegan diet.");
                     return false;
                 }
+
             }
         } catch (SQLException e) {
             System.out.println(" Error!  Cannot find customer Allergies and Dietary preferences.");
@@ -145,7 +172,6 @@ else {
 
 
     public String suggestAlternetive( String ingredientName,int mealId) {
-        // Step 1: Query to retrieve the customer's dietary preferences and allergies
         String customerQuery = """
                     SELECT dietary, allergies
                     FROM customer_preferences
@@ -186,8 +212,8 @@ else {
             String allergies = customerRs.getString("allergies");
 
             String dietaryCategory = switch (dietaryPreference.toLowerCase()) {
-                case "vagen" -> "vegetarian";
-                case "non-vagen" -> "Non-vegetarian";
+                case "vegan" -> "vegetarian";
+                case "non-vegan" -> "Non-vegetarian";
                 default -> throw new IllegalArgumentException("Unknown dietary preference: " + dietaryPreference);
             };
 

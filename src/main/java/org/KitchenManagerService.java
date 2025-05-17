@@ -65,7 +65,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
 
 
     public int insertOrder(int customerId, String mealName, int price, String orderDate) {
-        String orderDate1 = fixDateFormatIfNeeded( orderDate);
+
         String insertOrderSQL = "INSERT INTO orders (customer_id, meal_name, price, status, order_date) VALUES (?, ?, ?, ?, ?)";
         int orderId = -1;
 
@@ -76,13 +76,13 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             stmt.setString(2, mealName);
             stmt.setInt(3, price);
             stmt.setString(4, "Pending");
-            stmt.setString(5, orderDate1);
+            stmt.setString(5, orderDate);
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     orderId = rs.getInt(1);
-                 //   System.out.println("Generated Order ID: " + generatedOrderId);
+                    //   System.out.println("Generated Order ID: " + generatedOrderId);
                 }
             }
 
@@ -94,36 +94,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
 
         return orderId;
     }
-    public String fixDateFormatIfNeeded(String inputDate) {
-        DateTimeFormatter desiredFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter[] acceptedFormats = {
-                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
-                DateTimeFormatter.ofPattern("MM-dd-yyyy"),
-                DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-                DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH),
-                DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH),
-                DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH),
-                DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
-        };
 
-
-        try {
-            LocalDate validDate = LocalDate.parse(inputDate, desiredFormat);
-            return validDate.format(desiredFormat);
-        } catch (DateTimeParseException ignored) {}
-
-
-        for (DateTimeFormatter fmt : acceptedFormats) {
-            try {
-                LocalDate correctedDate = LocalDate.parse(inputDate, fmt);
-                return correctedDate.format(desiredFormat);
-            } catch (DateTimeParseException ignored) {}
-        }
-
-        return null;
-    }
 
 
     public void updateOrderStatus(int orderId, String newStatus) {
@@ -187,6 +158,112 @@ generateInvoice(orderId);
         return notifications;
     }
 
+
+
+
+    public static void addMenuItem(String name, List<String> ingredients) throws SQLException {
+        String selectSQL = "SELECT id FROM menu_items WHERE name = ?";
+        String insertMenuItemSQL = "INSERT INTO menu_items(name) VALUES(?)";
+        String updateMenuItemSQL = "UPDATE menu_items SET name = ? WHERE id = ?";
+        String deleteOldIngredientsSQL = "DELETE FROM meal_ingredients WHERE menu_item_id = ?";
+        String insertIngredientSQL = "INSERT INTO meal_ingredients(menu_item_id, ingredient) VALUES(?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            int menuItemId = -1;
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectSQL)) {
+                selectStmt.setString(1, name);
+                try (ResultSet rs = selectStmt.executeQuery()) {
+                    if (rs.next()) {
+                        menuItemId = rs.getInt("id");
+
+
+                        try (PreparedStatement deleteStmt = conn.prepareStatement(deleteOldIngredientsSQL)) {
+                            deleteStmt.setInt(1, menuItemId);
+                            deleteStmt.executeUpdate();
+                        }
+                    } else {
+
+                        try (PreparedStatement insertStmt = conn.prepareStatement(insertMenuItemSQL, Statement.RETURN_GENERATED_KEYS)) {
+                            insertStmt.setString(1, name);
+                            insertStmt.executeUpdate();
+
+                            try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
+                                if (generatedKeys.next()) {
+                                    menuItemId = generatedKeys.getInt(1);
+                                } else {
+                                    throw new SQLException("Failed to get inserted menu item ID.");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            try (PreparedStatement insertIngredientStmt = conn.prepareStatement(insertIngredientSQL)) {
+                for (String ingredient : ingredients) {
+                    insertIngredientStmt.setInt(1, menuItemId);
+                    insertIngredientStmt.setString(2, ingredient.trim().toLowerCase());
+                    insertIngredientStmt.executeUpdate();
+                }
+            }
+
+            conn.commit();
+
+
+        }
+    }
+
+    public  static String findAlternative(int customerId) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            String allergyQuery = "SELECT allergies  FROM customer_preferences WHERE customer_id  = ?";
+            String customerAllergy = null;
+
+            try (PreparedStatement stmt = conn.prepareStatement(allergyQuery)) {
+                stmt.setInt(1, customerId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        customerAllergy = rs.getString("allergies").toLowerCase();
+                    }
+                }
+            }
+
+            if (customerAllergy == null || customerAllergy.isEmpty()) {
+                return null;
+            }
+
+
+            String query = """
+            SELECT m.name
+            FROM menu_items m
+            WHERE NOT EXISTS (
+                SELECT 1 FROM meal_ingredients i
+                WHERE i.menu_item_id = m.id AND LOWER(i.ingredient) LIKE ?
+            )
+            LIMIT 1;
+            """;
+
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, "%" + customerAllergy + "%");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("name");
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
+
+
 
 

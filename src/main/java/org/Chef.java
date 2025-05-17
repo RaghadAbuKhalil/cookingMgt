@@ -22,18 +22,26 @@ public class Chef {
     }
 
 
-    public void addChef(String chefName, String Expertise) {
+    public int addChef(String chefName, String expertise) {
+        int chefId = -1;
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "INSERT INTO CHEFS (chef_name, expertise) VALUES (?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, chefName);
-            stmt.setString(2, Expertise);
+            stmt.setString(2, expertise);
 
             stmt.executeUpdate();
+
+
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                chefId = generatedKeys.getInt(1);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return chefId;
     }
 
          public void setChefJobload(int chefId, int jobload) {
@@ -104,5 +112,6 @@ public class Chef {
             e.printStackTrace();
         }
     }
+
 
 }

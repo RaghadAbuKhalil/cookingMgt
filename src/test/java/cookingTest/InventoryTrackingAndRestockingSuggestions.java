@@ -6,7 +6,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import org.InventoryService;
+ import org.Ingredient;
+ import org.InventoryService;
 import org.junit.Assert;
 
 
@@ -23,14 +24,17 @@ public class InventoryTrackingAndRestockingSuggestions {
     List<String> lowStock;
     private static final Logger logger = Logger.getLogger(InventoryTrackingAndRestockingSuggestions.class.getName());
     @Given("the kitchen manager is logged into the system")
-    public void the_kitchen_manager_is_logged_into_the_system() {
+    public void the_kitchen_manager_is_logged_into_the_system() throws SQLException {
 
         service = new InventoryService().getInstance() ;
             Assert.assertNotNull("Something wrong happened while logging ",service);
 
 
-           // service.addIngredient(new Ingredient("potato", "available", "vegetarian", 2));
-            logger.info("Logging in into the system...");
+            service.addOrUpdateIngredient(new Ingredient("potato", "out of stock", "vegetarian", 2));
+        service.addOrUpdateIngredient(new Ingredient("banana", "out of stock", "vegetarian", 4));
+        service.addOrUpdateIngredient(new Ingredient("onion", "available", "vegetarian", 15));
+
+        logger.info("Logging in into the system...");
 
 
     }

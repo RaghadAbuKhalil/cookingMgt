@@ -108,82 +108,82 @@ public class InvoicesAndFinancial {
 
 
     public String getCustomerEmail(int customerId) {
-            String email = null;
-            String qu = "SELECT email FROM customer_preferences WHERE customer_id = ?";
+        String email = null;
+        String qu = "SELECT email FROM customer_preferences WHERE customer_id = ?";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(qu)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(qu)) {
 
-                stmt.setInt(1, customerId);
-                ResultSet rs = stmt.executeQuery();
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
 
-                if (rs.next()) {
-                    email = rs.getString("email");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (rs.next()) {
+                email = rs.getString("email");
             }
-
-            return email;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
+        return email;
+    }
 
 
 
-        public static boolean sendInvoiceEmail(String toEmail, String subject, String body) {
 
-            final String fromEmail = "heba14.abu.soud@gmail.com";
-            final String password = "cmvl lysr mynr avdb";
+    public static boolean sendInvoiceEmail(String toEmail, String subject, String body) {
 
-            Properties props = new Properties();
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
+        final String fromEmail = "heba14.abu.soud@gmail.com";
+        final String password = "cmvl lysr mynr avdb";
 
-            Session session = Session.getInstance(props, new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(fromEmail, password);
-                }
-            });
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
-            try {
-                Message msg = new MimeMessage(session);
-                msg.setFrom(new InternetAddress(fromEmail));
-                msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-                msg.setSubject(subject);
-                msg.setText(body);
-
-                Transport.send(msg);
-                System.out.println("Email sent successfully to " + toEmail);
-                return true;
-            } catch (MessagingException e) {
-                e.printStackTrace();
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, password);
             }
-            return false;
+        });
+
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(fromEmail));
+            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            msg.setSubject(subject);
+            msg.setText(body);
+
+            Transport.send(msg);
+            System.out.println("Email sent successfully to " + toEmail);
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
 
     public double calculateDailyRevenue(String date) {
 
-            double totalRevenue = 0;
-            String query = "SELECT SUM(price * quantity) AS total FROM orders WHERE order_date = ? AND status = 'Completed'";
+        double totalRevenue = 0;
+        String query = "SELECT SUM(price * quantity) AS total FROM orders WHERE order_date = ? AND status = 'Completed'";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-                stmt.setString(1, date);
-                ResultSet rs = stmt.executeQuery();
+            stmt.setString(1, date);
+            ResultSet rs = stmt.executeQuery();
 
-                if (rs.next()) {
-                    totalRevenue = rs.getDouble("total");
-                    logger.info("Total revenue for date " + date + " is: $" + totalRevenue);
-                }
-            } catch (SQLException e) {
-                logger.severe("Error calculating daily revenue: " + e.getMessage());
+            if (rs.next()) {
+                totalRevenue = rs.getDouble("total");
+                logger.info("Total revenue for date " + date + " is: $" + totalRevenue);
             }
+        } catch (SQLException e) {
+            logger.severe("Error calculating daily revenue: " + e.getMessage());
+        }
 
-            return totalRevenue;
+        return totalRevenue;
 
 
     }
@@ -231,27 +231,27 @@ public class InvoicesAndFinancial {
     }
 
 
-   public double calculateMonthlyRevenue(String month, String year) {
-       double totalRevenue = 0;
-       String sql = "SELECT SUM(price * quantity) FROM orders " +
-               "WHERE strftime('%m', order_date) = ? AND strftime('%Y', order_date) = ? AND status = 'Completed'";
+    public double calculateMonthlyRevenue(String month, String year) {
+        double totalRevenue = 0;
+        String sql = "SELECT SUM(price * quantity) FROM orders " +
+                "WHERE strftime('%m', order_date) = ? AND strftime('%Y', order_date) = ? AND status = 'Completed'";
 
-       try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-           stmt.setString(1, String.format("%02d", Month.valueOf(month.toUpperCase()).getValue()));
-           stmt.setString(2, year);
-           ResultSet rs = stmt.executeQuery();
+            stmt.setString(1, String.format("%02d", Month.valueOf(month.toUpperCase()).getValue()));
+            stmt.setString(2, year);
+            ResultSet rs = stmt.executeQuery();
 
-           if (rs.next()) {
-               totalRevenue = rs.getDouble(1);
-           }
-       } catch (SQLException e) {
-           e.printStackTrace();
-       }
-       JOptionPane.showMessageDialog(null, "Total Revenue for the Month: $" + totalRevenue, "Monthly Revenue", JOptionPane.INFORMATION_MESSAGE);
-       return totalRevenue;
-   }
+            if (rs.next()) {
+                totalRevenue = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        JOptionPane.showMessageDialog(null, "Total Revenue for the Month: $" + totalRevenue, "Monthly Revenue", JOptionPane.INFORMATION_MESSAGE);
+        return totalRevenue;
+    }
 
     public Map<String, Double> getRevenueBreakdownByMealName(String month, String year) {
         Map<String, Double> revenueByType = new HashMap<>();
@@ -329,16 +329,15 @@ public class InvoicesAndFinancial {
     }
 
 
-        private final Set<Integer> remindedCustomers = new HashSet<>();
+    private final Set<Integer> remindedCustomers = new HashSet<>();
 
-        public void recordReminderSent(int customerId) {
-            remindedCustomers.add(customerId);
-        }
+    public void recordReminderSent(int customerId) {
+        remindedCustomers.add(customerId);
+    }
 
-        public boolean wasReminderSentToCustomer(int customerId) {
-            return remindedCustomers.contains(customerId);
-        }
+    public boolean wasReminderSentToCustomer(int customerId) {
+        return remindedCustomers.contains(customerId);
+    }
 
 
 }
-

@@ -87,7 +87,7 @@ public class NotificationService {
 
         return notificationsList;
     }
-    public synchronized void sendChefRemindersForTomorrow() throws InterruptedException {
+    public  void sendChefRemindersForTomorrow() throws InterruptedException {
 
 
         String query = "SELECT t.task_name, t.chef_id " +
