@@ -160,62 +160,6 @@ generateInvoice(orderId);
 
 
 
-
-    public static void addMenuItem(String name, List<String> ingredients) throws SQLException {
-        String selectSQL = "SELECT id FROM menu_items WHERE name = ?";
-        String insertMenuItemSQL = "INSERT INTO menu_items(name) VALUES(?)";
-        String updateMenuItemSQL = "UPDATE menu_items SET name = ? WHERE id = ?";
-        String deleteOldIngredientsSQL = "DELETE FROM meal_ingredients WHERE menu_item_id = ?";
-        String insertIngredientSQL = "INSERT INTO meal_ingredients(menu_item_id, ingredient) VALUES(?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false);
-
-            int menuItemId = -1;
-
-            try (PreparedStatement selectStmt = conn.prepareStatement(selectSQL)) {
-                selectStmt.setString(1, name);
-                try (ResultSet rs = selectStmt.executeQuery()) {
-                    if (rs.next()) {
-                        menuItemId = rs.getInt("id");
-
-
-                        try (PreparedStatement deleteStmt = conn.prepareStatement(deleteOldIngredientsSQL)) {
-                            deleteStmt.setInt(1, menuItemId);
-                            deleteStmt.executeUpdate();
-                        }
-                    } else {
-
-                        try (PreparedStatement insertStmt = conn.prepareStatement(insertMenuItemSQL, Statement.RETURN_GENERATED_KEYS)) {
-                            insertStmt.setString(1, name);
-                            insertStmt.executeUpdate();
-
-                            try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
-                                if (generatedKeys.next()) {
-                                    menuItemId = generatedKeys.getInt(1);
-                                } else {
-                                    throw new SQLException("Failed to get inserted menu item ID.");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            try (PreparedStatement insertIngredientStmt = conn.prepareStatement(insertIngredientSQL)) {
-                for (String ingredient : ingredients) {
-                    insertIngredientStmt.setInt(1, menuItemId);
-                    insertIngredientStmt.setString(2, ingredient.trim().toLowerCase());
-                    insertIngredientStmt.executeUpdate();
-                }
-            }
-
-            conn.commit();
-
-
-        }
-    }
-
     public  static String findAlternative(int customerId) {
         try (Connection conn = DatabaseConnection.getConnection()) {
 
