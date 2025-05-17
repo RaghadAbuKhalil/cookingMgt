@@ -3,8 +3,8 @@ Feature: Generate Invoices and Track Financial Reports
   Scenario: Customer receives an invoice for a completed order
     Given a customer has placed an order and the order is completed
     When the order is completed
-    Then the system should generate an invoice for the customer
-    And the invoice should include itemized details of the meal and the total price
+    Then the system should generate an invoice for the customer which itemized details of the meal and the total price
+
     And the system should send the invoice to the customer's email
 
   Scenario: Generate a financial report for daily sales

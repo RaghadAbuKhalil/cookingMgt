@@ -81,15 +81,12 @@ String status= kitchenManager1.getOrderStatus(orderId);
 Assert.assertEquals("the task completed","Completed",status);
     }
 
-    @Then("the system should generate an invoice for the customer")
+    @Then("the system should generate an invoice for the customer which itemized details of the meal and the total price")
     public void theSystemShouldGenerateAnInvoiceForTheCustomer() {
 invoicesAndFinancial1.generateInvoice(orderId);
     }
 
-    @And("the invoice should include itemized details of the meal and the total price")
-    public void theInvoiceShouldIncludeItemizedDetailsOfTheMealAndTheTotalPrice() {
 
-    }
 
     @And("the system should send the invoice to the customer's email")
     public void theSystemShouldSendTheInvoiceToTheCustomerSEmail() {
