@@ -84,18 +84,17 @@ public class InvoicesAndFinancial {
                         + "Quantity: " + quantity + "\n"
                         + "Total: " + totalPrice + "\n"
                         + "Status: " + status;
-
-                JOptionPane.showMessageDialog(null, message, "Invoice", JOptionPane.INFORMATION_MESSAGE);
+                   System.out.println(message);
+                //JOptionPane.showMessageDialog(null, message, "Invoice", JOptionPane.INFORMATION_MESSAGE);
                 return message;
             } else {
-                JOptionPane.showMessageDialog(null, "No invoice found for orderId: " + orderId,
-                        "Invoice Not Found", JOptionPane.WARNING_MESSAGE);
+              //  JOptionPane.showMessageDialog(null, "No invoice found for orderId: " + orderId,
+                    //    "Invoice Not Found", JOptionPane.WARNING_MESSAGE);
+                System.out.println("No invoice found for orderId: " + orderId);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
         }
         return null;
     }
@@ -249,7 +248,9 @@ public class InvoicesAndFinancial {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        JOptionPane.showMessageDialog(null, "Total Revenue for the Month: $" + totalRevenue, "Monthly Revenue", JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Total Revenue for the Month: $" + totalRevenue, "Monthly Revenue", JOptionPane.INFORMATION_MESSAGE);
+        System.out.println("Total Revenue for the Month: $" + totalRevenue);
+
         return totalRevenue;
     }
 
@@ -272,7 +273,8 @@ public class InvoicesAndFinancial {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        JOptionPane.showMessageDialog(null, revenueByType.toString(), "Revenue Breakdown", JOptionPane.INFORMATION_MESSAGE);
+        //JOptionPane.showMessageDialog(null, revenueByType.toString(), "Revenue Breakdown", JOptionPane.INFORMATION_MESSAGE);
+        System.out.println(revenueByType.toString());
         return revenueByType;
     }
 
@@ -296,7 +298,7 @@ public class InvoicesAndFinancial {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        JOptionPane.showMessageDialog(null, mealOrders.toString(), "Most Ordered Meals", JOptionPane.INFORMATION_MESSAGE);
+      //  JOptionPane.showMessageDialog(null, mealOrders.toString(), "Most Ordered Meals", JOptionPane.INFORMATION_MESSAGE);
         return mealOrders;
     }
 
