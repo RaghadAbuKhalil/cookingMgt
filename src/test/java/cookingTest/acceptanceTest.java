@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "C:\\Users\\ragha\\IdeaProjects\\cookingSweet\\src\\test\\resources\\cases",
+        features = "src/test/resources/cases",
         monochrome = true,
         snippets = SnippetType.CAMELCASE,
         glue = {"cookingTest"}
