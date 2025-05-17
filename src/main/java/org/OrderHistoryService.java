@@ -43,28 +43,7 @@ private KitchenManagerService kitchenManagerService;
         return orderList;
     }
 
-    public int storeOrderAndGetId(int customerId, String mealName) {
-        String sql = "INSERT INTO orders (customer_id, meal_name, status) VALUES (?, ?, 'Pending')";
-        int orderId = -1;
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, customerId);
-            stmt.setString(2, mealName);
-            stmt.executeUpdate();
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    orderId = generatedKeys.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return orderId;
-    }
 
     public String reorderMeal(int customerId, String mealName,int price,String Date) {
         if (getOrderHistory(customerId).contains(mealName)) {
