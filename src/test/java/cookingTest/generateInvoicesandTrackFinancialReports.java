@@ -63,14 +63,14 @@ public class generateInvoicesandTrackFinancialReports {
             e.printStackTrace();
         }
         //***********************************
-    orderId=kitchenManager1.insertOrder(customerId,mealName,price,orderDate);
+    orderId=kitchenManager1.insertOrder(customerId,mealName,orderDate);
 kitchenManager1.updateOrderStatus(orderId,"Completed");
 
 
     }
    @Given("a customer has placed an order and the order is completed")
     public void aCustomerHasPlacedAnOrderAndTheOrderIsCompleted() {
-        kitchenManager1.insertOrder(customerId,mealName,quantity,orderDate);
+        kitchenManager1.insertOrder(customerId,mealName,orderDate);
 
     }
 

@@ -30,8 +30,8 @@ public class trackPastPOdersAndPersonalizedMealPlans {
     @Given("a customer has previously placed meal orders")
     public void a_customer_has_previously_placed_meal_orders() {
 
-        maneger.insertOrder(1, "Vegan Salad",price,date);
-        maneger.insertOrder(1, "meet",price,date);
+        maneger.insertOrder(1, "Vegan Salad",date);
+        maneger.insertOrder(1, "meet",date);
 
     }
 
@@ -48,7 +48,7 @@ public class trackPastPOdersAndPersonalizedMealPlans {
 
     @And("the customer can reorder any past meal with a single click")
     public void the_customer_can_reorder_any_past_meal_with_a_single_click() {
-        reorderMessage = orderService.reorderMeal(1, "meet",price,date);
+        reorderMessage = orderService.reorderMeal(1, "meet",date);
         Assert.assertEquals("Meal reordered successfully meet", reorderMessage);
         System.out.println(reorderMessage);
     }

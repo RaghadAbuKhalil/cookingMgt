@@ -64,29 +64,42 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
     }
 
 
-    public int insertOrder(int customerId, String mealName, int price, String orderDate) {
-
+    public int insertOrder(int customerId, String mealName, String orderDate) {
+        String fetchPriceSQL = "SELECT price FROM menu_items WHERE name = ?";
         String insertOrderSQL = "INSERT INTO orders (customer_id, meal_name, price, status, order_date) VALUES (?, ?, ?, ?, ?)";
         int orderId = -1;
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
-            stmt.setInt(1, customerId);
-            stmt.setString(2, mealName);
-            stmt.setInt(3, price);
-            stmt.setString(4, "Pending");
-            stmt.setString(5, orderDate);
-            stmt.executeUpdate();
+            double price = 0.0;
+            try (PreparedStatement fetchStmt = conn.prepareStatement(fetchPriceSQL)) {
+                fetchStmt.setString(1, mealName);
+                ResultSet rs = fetchStmt.executeQuery();
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    orderId = rs.getInt(1);
-                    //   System.out.println("Generated Order ID: " + generatedOrderId);
+                    price = rs.getDouble("price");
+                } else {
+                    System.out.println("Meal not found in menu_items.");
+                    return -1;
                 }
             }
 
-            taskAssignment.assignTaskToChef(orderId, mealName);
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS)) {
+                insertStmt.setInt(1, customerId);
+                insertStmt.setString(2, mealName);
+                insertStmt.setDouble(3, price);
+                insertStmt.setString(4, "Pending");
+                insertStmt.setString(5, orderDate);
+                insertStmt.executeUpdate();
+
+                try (ResultSet rs = insertStmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        orderId = rs.getInt(1);
+                    }
+                }
+
+                taskAssignment.assignTaskToChef(orderId, mealName);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -205,6 +218,48 @@ generateInvoice(orderId);
 
         return null;
     }
+    public static void addMealWithIngredients(String mealName, double price, List<String> ingredients) {
+        String insertMealSQL = "INSERT INTO menu_items (name, price) VALUES (?, ?)";
+        String insertIngredientSQL = "INSERT INTO meal_ingredients (menu_item_id, ingredient) VALUES (?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            int mealId;
+
+            // أولاً: إدخال الوجبة
+            try (PreparedStatement mealStmt = conn.prepareStatement(insertMealSQL, Statement.RETURN_GENERATED_KEYS)) {
+                mealStmt.setString(1, mealName);
+                mealStmt.setDouble(2, price);
+                mealStmt.executeUpdate();
+
+                try (ResultSet generatedKeys = mealStmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        mealId = generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("Failed to retrieve meal ID.");
+                    }
+                }
+            }
+
+
+            try (PreparedStatement ingredientStmt = conn.prepareStatement(insertIngredientSQL)) {
+                for (String ingredient : ingredients) {
+                    ingredientStmt.setInt(1, mealId);
+                    ingredientStmt.setString(2, ingredient);
+                    ingredientStmt.addBatch();
+                }
+                ingredientStmt.executeBatch();
+            }
+
+            conn.commit();
+            System.out.println("Meal and ingredients added successfully!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

@@ -3,7 +3,6 @@ package org;
 import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
-import javax.swing.*;
 import java.sql.*;
 
 
@@ -23,20 +22,21 @@ public class CustomMealService {
         return instance;
     }
 
-    private CustomMealService() {
+    private  CustomMealService() {
         DatabaseSetup.setupDatabase();
-        try {
+       try {
             InventoryService.addOrUpdateIngredient(new Ingredient("tomato", "out of stock", "vegetarian", 3));
             InventoryService.addOrUpdateIngredient(new Ingredient("rice", "available", "vegetarian", 15));
             InventoryService.addOrUpdateIngredient(new Ingredient("broccoli", "available", "vegetarian", 15));
             InventoryService.addOrUpdateIngredient(new Ingredient("strawberry", "available", "vegetarian", 15));
             InventoryService.addOrUpdateIngredient(new Ingredient("chicken", "available", "Non-vegetarian", 15));
             InventoryService.addOrUpdateIngredient(new Ingredient("fish", "available", "Non-vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("apple ", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("apple", "available", "vegetarian", 15));
             InventoryService.addOrUpdateIngredient(new Ingredient("mushroom", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("veal ", "available", "Non-vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("cheese ", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient(" Olive Oil", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("veal", "available", "Non-vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("cheese", "available", "vegetarian", 15));
+            InventoryService.addOrUpdateIngredient(new Ingredient("olive oil", "available", "vegetarian", 15));
+ InventoryService.addOrUpdateIngredient(new Ingredient("banana", "available", "vegetarian", 15));
 
 
 
@@ -111,6 +111,7 @@ else {
                 }
             } else {
                 System.out.println("Ingredient unavailable: " + ingr);
+                suggestAlternetive(ingr,mealId);
                 conn.commit();
                 return false;
             }
@@ -134,12 +135,14 @@ else {
             if (allergyResult.next()) {
                 String dietary = allergyResult.getString(1);
                 String allergy = allergyResult.getString(2);
-                if (allergy != null && allergy.toLowerCase().equals(ingr.toLowerCase())) {
+                 if (allergy != null&&!allergy.toLowerCase().equals("none") && allergy.toLowerCase().equals(ingr.toLowerCase())) {
                     System.out.println("Customer has an  allergy to " + ingr);
+                     suggestAlternetive(ingr,mealId);
                     return false;
                 }
                 if (dietary.equals("vegan") && category.toLowerCase().equals("Non-vegetarian".toLowerCase())) {
                     System.out.println(ingr + " is not suitable a vegan diet.");
+                    suggestAlternetive(ingr,mealId);
                     return false;
                 }
 
@@ -232,6 +235,31 @@ else {
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             throw new RuntimeException("Error in suggesting an alternative", e);
+        }
+    }
+    public static void showCustomMeals(int customerId) {
+        String sql = "SELECT meal_name FROM custom_meals WHERE customer_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("\n--- Custom Meals for Customer ID: " + customerId + " ---");
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                String mealName = rs.getString("meal_name");
+                System.out.println("- " + mealName);
+            }
+
+            if (!found) {
+                System.out.println("No custom meals found for this customer.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving custom meals: " + e.getMessage());
         }
     }
 }

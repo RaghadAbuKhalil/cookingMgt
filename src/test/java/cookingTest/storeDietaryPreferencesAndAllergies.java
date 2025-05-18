@@ -1,20 +1,12 @@
 package cookingTest;
 
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.DietaryAndAllergies;
 import org.KitchenManagerService;
 import org.junit.Assert;
-
-import java.awt.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class storeDietaryPreferencesAndAllergies {
@@ -31,7 +23,7 @@ public  void setup(){
         dietaryAndAllergies1 = DietaryAndAllergies.getInstance();
         Assert.assertNotNull("the object of DietaryAndAllergies is not created ", dietaryAndAllergies1);
         System.out.println("Customer is personalizing meal selection");
-        testId= DietaryAndAllergies.setCustomerPreferences("vegan","strawberry");
+        testId= DietaryAndAllergies.addNewCustomer("vegan","strawberry","raghadabukhalil90@gmail.com");
         allergy =DietaryAndAllergies.getCustomerAllergies(testId);
         preferences =DietaryAndAllergies.getCustomerPreferences(testId);
 

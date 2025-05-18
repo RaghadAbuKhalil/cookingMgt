@@ -101,6 +101,7 @@ public class DatabaseSetup {
             String menu = "CREATE TABLE  IF NOT EXISTS menu_items (\n" +
                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                     "    name TEXT UNIQUE NOT NULL\n" +
+                    " price REAL NOT NULL DEFAULT 0.0"+
                     ");\n";
             String meal_ingredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +

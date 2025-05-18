@@ -5,10 +5,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.InvoicesAndFinancial;
-import org.KitchenManagerService;
-import org.NotificationService;
-import org.TaskManager;
+import org.*;
 import org.database.DatabaseConnection;
 import org.junit.Assert;
 
@@ -25,11 +22,8 @@ public class UpcomingOrdersAndDeliveries {
     int orderId ;
     int customerId;
     int chefid;
-    String dietary="vagen";
     String  email="s12217034@stu.najah.edu";
-    String allergies="meet";
     String mealName="meet";
-    int quantity=1;
     int price=19;
     String orderDate="2025-05-10";
 
@@ -42,30 +36,13 @@ public class UpcomingOrdersAndDeliveries {
         invoicesAndFinancial1 = new InvoicesAndFinancial();
         notification = new NotificationService();
         manager=new TaskManager();
-        String insertSQL = "INSERT INTO customer_preferences (dietary, email, allergies) VALUES (?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setString(1, dietary);
-            stmt.setString(2, email);
-            stmt.setString(3, allergies);
-
-            stmt.executeUpdate();
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                customerId = rs.getInt(1);
-                System.out.println("Customer inserted successfully. Generated ID: " + customerId);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        customerId= DietaryAndAllergies.addNewCustomer("vegan","meet","s12217034@stu.najah.edu");
     }
     @Given("a customer has a scheduled meal delivery for tomorrow")
     public void aCustomerHasAScheduledMealDeliveryForTomorrow() {
         String futureDate = LocalDate.now().plusDays(1).toString();
 
-        orderId = kitchenManager1.insertOrder(customerId, mealName, price, futureDate);
+        orderId = kitchenManager1.insertOrder(customerId, mealName, futureDate);
     }
 
     @And("the customer's email is registered in the system")

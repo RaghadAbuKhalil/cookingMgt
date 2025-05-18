@@ -45,9 +45,9 @@ private KitchenManagerService kitchenManagerService;
 
 
 
-    public String reorderMeal(int customerId, String mealName,int price,String Date) {
+    public String reorderMeal(int customerId, String mealName,String Date) {
         if (getOrderHistory(customerId).contains(mealName)) {
-            int newOrderId = kitchenManagerService.insertOrder(customerId, mealName,price,Date);
+            int newOrderId = kitchenManagerService.insertOrder(customerId, mealName,Date);
             TaskManager.getInstance().assignTaskToChef(newOrderId, mealName);
             return "Meal reordered successfully " + mealName;
         }

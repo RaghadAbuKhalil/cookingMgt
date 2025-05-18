@@ -27,8 +27,8 @@ public class DietaryAndAllergies {
     }
 
 
-    public static int setCustomerPreferences(String dietary, String allergies) {
-        String sql = "INSERT INTO customer_preferences (dietary, allergies) VALUES (?, ?)";
+    public static int addNewCustomer(String dietary, String allergies, String email) {
+        String sql = "INSERT INTO customer_preferences (dietary, allergies,email) VALUES (?, ?,?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -37,6 +37,7 @@ public class DietaryAndAllergies {
 
             stmt.setString(1, dietary.toLowerCase());
             stmt.setString(2, allergies.toLowerCase());
+            stmt.setString(3,email);
             stmt.executeUpdate();
 
             ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -93,7 +94,7 @@ public class DietaryAndAllergies {
 
     public static boolean checkAllergies(int customerId, String meal) {
         String allergies = getCustomerAllergies(customerId);
-        if (allergies == null || allergies.isEmpty()) {
+        if (allergies == null || allergies.isEmpty()||allergies.toLowerCase().equals("none")) {
             return false;
         }
         String ingredientsQuery = "SELECT ingredient FROM meal_ingredients " +
