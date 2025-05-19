@@ -27,9 +27,9 @@ public class KitchenManagerService {
 
 
 
-    public KitchenManagerService() {
-        taskAssignment =  new TaskManager();
-        notificationService=new NotificationService();
+    private KitchenManagerService() {
+        taskAssignment =  TaskManager.getInstance();
+        notificationService=NotificationService.getInstance();
         try {
             conn =   DatabaseConnection.getConnection() ;
         } catch (SQLException e) {

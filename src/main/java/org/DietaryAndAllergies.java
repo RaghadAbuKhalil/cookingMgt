@@ -16,7 +16,7 @@ public class DietaryAndAllergies {
         }
         return instance;
     }
-    public DietaryAndAllergies() {
+    private DietaryAndAllergies() {
      DatabaseSetup.setupDatabase();
 
     }

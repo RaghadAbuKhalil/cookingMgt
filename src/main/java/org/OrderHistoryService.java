@@ -9,7 +9,7 @@ public class OrderHistoryService {
 private KitchenManagerService kitchenManagerService;
     private OrderHistoryService() {
 
-        kitchenManagerService= new KitchenManagerService();
+        kitchenManagerService= KitchenManagerService.getInstance();
     }
 
     public static synchronized OrderHistoryService getInstance() {

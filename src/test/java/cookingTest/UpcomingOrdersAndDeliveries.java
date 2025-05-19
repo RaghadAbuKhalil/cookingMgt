@@ -34,8 +34,8 @@ public class UpcomingOrdersAndDeliveries {
 
         kitchenManager1 = KitchenManagerService.getInstance();
         invoicesAndFinancial1 = new InvoicesAndFinancial();
-        notification = new NotificationService();
-        manager=new TaskManager();
+        notification = NotificationService.getInstance();
+        manager= TaskManager.getInstance();
         customerId= DietaryAndAllergies.addNewCustomer("vegan","meet","s12217034@stu.najah.edu");
     }
     @Given("a customer has a scheduled meal delivery for tomorrow")

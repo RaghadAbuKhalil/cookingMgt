@@ -92,7 +92,7 @@ public class CustomMealService {
         return false;
     }
 
-    private boolean checkAllergiesAndDietary(int mealId, String ingr, String category) {
+    private boolean checkAllergiesAndDietary(int mealId, String ingr, String category) throws SQLException {
         String checkAllergies = "SELECT dietary, allergies FROM customer_preferences WHERE customer_id = (SELECT customer_id FROM custom_meals WHERE meal_id = ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -117,7 +117,7 @@ public class CustomMealService {
             }
         } catch (SQLException e) {
             System.out.println(" Error!  Cannot find customer Allergies and Dietary preferences.");
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
         return true;
     }

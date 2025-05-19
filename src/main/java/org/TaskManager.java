@@ -11,8 +11,8 @@ public class TaskManager {
 
     private static TaskManager instance;
 
-    public TaskManager() {
-         Chef chef = new Chef();
+   private TaskManager() {
+         Chef chef = Chef.getInstance();
 
     }
 

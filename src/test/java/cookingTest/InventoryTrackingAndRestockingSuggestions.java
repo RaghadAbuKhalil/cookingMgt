@@ -26,7 +26,7 @@ public class InventoryTrackingAndRestockingSuggestions {
     @Given("the kitchen manager is logged into the system")
     public void the_kitchen_manager_is_logged_into_the_system() throws SQLException {
 
-        service = new InventoryService().getInstance() ;
+        service = InventoryService.getInstance() ;
             Assert.assertNotNull("Something wrong happened while logging ",service);
 
 

@@ -7,8 +7,7 @@ import java.sql.*;
 public class Chef {
     private static Chef instance;
 
-    public Chef() {
-       // createChefAndTaskTable();
+    private Chef() {
     }
     public static synchronized Chef getInstance() {
         if (instance == null) {

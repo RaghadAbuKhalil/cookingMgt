@@ -13,7 +13,7 @@ public class NotificationService {
 
     private static NotificationService instance;
 
-    public NotificationService() {
+   private NotificationService() {
 
     }
 

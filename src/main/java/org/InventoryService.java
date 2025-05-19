@@ -23,7 +23,7 @@ public class InventoryService
         }
         return instance;
     }
-    public InventoryService() {
+   private InventoryService() {
         try {
     conn = DatabaseConnection.getConnection();
             DatabaseSetup.setupDatabase();
