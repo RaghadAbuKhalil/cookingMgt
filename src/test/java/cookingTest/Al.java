@@ -6,13 +6,19 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Al {
 
+    private static final Logger logger = Logger.getLogger(Al.class.getName());
 
-        private String dietaryRestriction;
+    private String dietaryRestriction;
         private List<String> ingredients;
         private int time;
         private String recommendedRecipe;
@@ -39,6 +45,14 @@ public class Al {
 
         @Given("the customer has dietary restriction {string}")
         public void theCustomerHasDietaryRestriction(String restriction) {
+            try {
+
+                Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+                Statement stmt = conn.createStatement();
+                stmt.execute("PRAGMA invalid_syntax_here");
+            } catch (SQLException e) {
+               logger.warning("error happened in get connection to data base");
+            }
             this.dietaryRestriction = restriction;
         }
 
