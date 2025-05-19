@@ -11,13 +11,9 @@ public class CustomMealService {
 
     private static CustomMealService instance;
 
-    public static CustomMealService getInstance() {
+    public static synchronized CustomMealService getInstance() {
         if (instance == null) {
-            synchronized (CustomMealService.class) {
-                if (instance == null) {
-                    instance = new CustomMealService();
-                }
-            }
+            instance = new CustomMealService();
         }
         return instance;
     }

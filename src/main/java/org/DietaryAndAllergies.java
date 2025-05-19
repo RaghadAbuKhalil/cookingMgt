@@ -10,14 +10,9 @@ public class DietaryAndAllergies {
     private static DietaryAndAllergies instance;
 
 
-
-    public static DietaryAndAllergies getInstance() {
+    public static synchronized DietaryAndAllergies getInstance() {
         if (instance == null) {
-            synchronized (DietaryAndAllergies.class) {
-                if (instance == null) {
-                    instance = new DietaryAndAllergies();
-                }
-            }
+            instance = new DietaryAndAllergies();
         }
         return instance;
     }

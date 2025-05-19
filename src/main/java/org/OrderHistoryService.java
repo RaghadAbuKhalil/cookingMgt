@@ -8,16 +8,13 @@ public class OrderHistoryService {
     private static OrderHistoryService instance;
 private KitchenManagerService kitchenManagerService;
     private OrderHistoryService() {
+
         kitchenManagerService= new KitchenManagerService();
     }
 
-    public static OrderHistoryService getInstance() {
+    public static synchronized OrderHistoryService getInstance() {
         if (instance == null) {
-            synchronized (OrderHistoryService.class) {
-                if (instance == null) {
-                    instance = new OrderHistoryService();
-                }
-            }
+            instance = new OrderHistoryService();
         }
         return instance;
     }

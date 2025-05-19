@@ -20,8 +20,7 @@ import java.util.logging.Logger;
 public class InvoicesAndFinancial {
     private static final Logger logger = Logger.getLogger(InvoicesAndFinancial.class.getName());
 
-    OrderHistoryService order1;
-    TaskManager taskmanager = new TaskManager();
+
     public InvoicesAndFinancial() {
     }
 
@@ -37,7 +36,7 @@ public class InvoicesAndFinancial {
             ResultSet rs = stmt1.executeQuery();
 
             if (rs.next()) {
-                int quantity = 1; // ثابت حالياً
+                int quantity = 1;
                 double price = rs.getDouble("price");
                 double totalPrice = price * quantity;
 

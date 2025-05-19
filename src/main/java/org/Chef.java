@@ -10,13 +10,9 @@ public class Chef {
     public Chef() {
        // createChefAndTaskTable();
     }
-    public static Chef getInstance() {
+    public static synchronized Chef getInstance() {
         if (instance == null) {
-            synchronized (Chef.class) {
-                if (instance == null) {
-                    instance = new Chef();
-                }
-            }
+            instance = new Chef();
         }
         return instance;
     }

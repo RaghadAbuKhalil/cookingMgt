@@ -18,13 +18,9 @@ public class KitchenManagerService {
     TaskManager  taskAssignment;
     private NotificationService notificationService;
   private Connection conn;
-    public static KitchenManagerService getInstance() {
+    public static synchronized KitchenManagerService getInstance() {
         if (instance == null) {
-            synchronized (KitchenManagerService.class) {
-                if (instance == null) {
-                    instance = new KitchenManagerService();
-                }
-            }
+            instance = new KitchenManagerService();
         }
         return instance;
     }

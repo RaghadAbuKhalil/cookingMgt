@@ -17,13 +17,9 @@ public class InventoryService
 
     private static InventoryService instance;
 
-    public static InventoryService getInstance() {
+    public static synchronized InventoryService getInstance() {
         if (instance == null) {
-            synchronized (InventoryService.class) {
-                if (instance == null) {
-                    instance = new InventoryService();
-                }
-            }
+            instance = new InventoryService();
         }
         return instance;
     }
