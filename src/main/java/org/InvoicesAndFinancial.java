@@ -4,7 +4,6 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.database.DatabaseConnection;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,10 +18,6 @@ import java.util.logging.Logger;
 
 public class InvoicesAndFinancial {
     private static final Logger logger = Logger.getLogger(InvoicesAndFinancial.class.getName());
-
-
-    public InvoicesAndFinancial() {
-    }
 
     public void generateInvoice(int orderId) {
         String query = "SELECT meal_name, price, status, order_date FROM ORDERS WHERE order_id = ?";

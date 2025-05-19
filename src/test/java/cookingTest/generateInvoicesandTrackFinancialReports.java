@@ -18,8 +18,6 @@ public class generateInvoicesandTrackFinancialReports {
    int orderId ;
     int customerId;
     String mealName="meet";
-    int quantity=1;
-    int price=19;
     String orderDate="2025-05-25";
     double monthlyRevenue = 0;
     Map<String, Double> revenueByMealType;
@@ -74,7 +72,7 @@ invoicesAndFinancial1.generateInvoice(orderId);
         String subject = "Your Invoice";
         String body = invoicesAndFinancial1.displayInvoice(orderId);
 
-        boolean result =invoicesAndFinancial1.sendInvoiceEmail(email, subject, body);
+        boolean result = InvoicesAndFinancial.sendInvoiceEmail(email, subject, body);
         Assert.assertTrue("Invoice should be sent to customer's email", result);
     }
 

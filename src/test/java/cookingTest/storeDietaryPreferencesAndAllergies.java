@@ -8,6 +8,8 @@ import org.DietaryAndAllergies;
 import org.KitchenManagerService;
 import org.junit.Assert;
 
+import java.sql.SQLException;
+
 
 public class storeDietaryPreferencesAndAllergies {
     private int testId ;
@@ -79,7 +81,7 @@ public  void setup(){
     }
 
     @When("they try to order a dish containing his allergy")
-    public void orderADishContainingHisAllergy() {
+    public void orderADishContainingHisAllergy() throws SQLException {
           order="Strawberry CAKE";
         warningMsg = DietaryAndAllergies.checkAllergies(testId ,order);
         System.out.println("Customer attempts to order: " + order);
