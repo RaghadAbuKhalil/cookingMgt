@@ -50,7 +50,7 @@ private String ingredient;
     }
 
     @When("the system checks for a suitable alternative")
-    public void theSystemChecksForASuitableAlternative() {
+    public void theSystemChecksForASuitableAlternative() throws SQLException {
         suggestedAlternative = customMealService.suggestAlternetive(ingredient,mealId);
     }
 

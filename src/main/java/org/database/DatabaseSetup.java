@@ -44,7 +44,7 @@ public class DatabaseSetup {
                 "FOREIGN KEY (chef_id) REFERENCES CHEFS(chef_id) ON DELETE SET NULL, " +
                 "FOREIGN KEY (order_id) REFERENCES ORDERS(order_id) ON DELETE SET NULL)";
 
-        String incompatible_ingredients   = "CREATE TABLE IF NOT EXISTS incompatible_ingredients ("
+        String incompatibleIngredients   = "CREATE TABLE IF NOT EXISTS incompatible_ingredients ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "ingredient1 TEXT NOT NULL, "
                 + "ingredient2 TEXT NOT NULL"
@@ -91,7 +91,7 @@ public class DatabaseSetup {
                 + "FOREIGN KEY (mealId) REFERENCES meals(mealId)"
                 + ")";
             String suppliers ="CREATE TABLE IF NOT EXISTS suppliers (id INTEGER PRIMARY KEY AUTOINCREMENT,ingredient_name TEXT NOT NULL,supplier_name TEXT NOT NULL,price REAL,UNIQUE(ingredient_name, supplier_name));";
-            String purchase_orders=  "CREATE TABLE IF NOT EXISTS purchase_orders (\n" +
+            String purchaseOrders=  "CREATE TABLE IF NOT EXISTS purchase_orders (\n" +
                      "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                      "    ingredient_name TEXT,\n" +
                      "    quantity INTEGER,\n" +
@@ -104,7 +104,7 @@ public class DatabaseSetup {
                 "    price REAL NOT NULL DEFAULT 0.0\n" +
                 ");";
 
-        String meal_ingredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
+        String mealIngredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                     "    menu_item_id INTEGER,\n" +
                     "    ingredient TEXT NOT NULL,\n" +
@@ -124,16 +124,15 @@ public class DatabaseSetup {
             stmt.execute(notifications);
             stmt.execute(invoices);
             stmt.execute(kitchenNotifications);
-           stmt.execute(incompatible_ingredients);
+           stmt.execute(incompatibleIngredients);
         stmt.executeUpdate(customMealIngredients);
          stmt.execute(suppliers);
-         stmt.execute(purchase_orders);
+         stmt.execute(purchaseOrders);
         stmt.execute(menu);
-   stmt.execute(meal_ingredients);
+   stmt.execute(mealIngredients);
 
             stmt.execute("PRAGMA foreign_keys = ON;");
 
-          //  System.out.println("Database created successfully");
 
 
 

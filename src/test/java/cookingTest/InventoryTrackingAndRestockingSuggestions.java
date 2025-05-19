@@ -39,7 +39,7 @@ public class InventoryTrackingAndRestockingSuggestions {
 
     }
     @When("they open the inventory page")
-    public void they_open_the_inventory_page() {
+    public void they_open_the_inventory_page() throws SQLException {
         inventory = service.getAllIngredientQuantities();
         Assert.assertNotNull("  Ingredients from inventory must be displayed ",inventory);
         logger.info("Inventory page opened.");
@@ -95,7 +95,7 @@ public class InventoryTrackingAndRestockingSuggestions {
         }
     }
     @When("the kitchen manager opens the inventory page")
-    public void the_kitchen_manager_opens_the_inventory_page() {
+    public void the_kitchen_manager_opens_the_inventory_page() throws SQLException {
         inventory = service.getAllIngredientQuantities();
         assertNotNull("Inventory page must be opened",inventory);
         logger.info("Kitchen manager opened the inventory page.");

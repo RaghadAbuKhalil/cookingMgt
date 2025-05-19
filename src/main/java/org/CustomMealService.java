@@ -4,10 +4,11 @@ import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
 import java.sql.*;
-
+import java.util.logging.Logger;
 
 
 public class CustomMealService {
+    private static final Logger logger = Logger.getLogger(CustomMealService.class.getName());
 
     private static CustomMealService instance;
 
@@ -26,7 +27,7 @@ public class CustomMealService {
     public boolean addIngredient(int mealId, String ingr) {
 
 
-        String check = "SELECT dietary_category ,ingredient_id FROM inventory WHERE name = ? AND status = 'available'";
+        String check = "SELECT dietary_category FROM inventory WHERE name = ? AND status = 'available'";
         String insert = "INSERT INTO custom_meal_ingredients (mealId" +
                 ", ingredientName) VALUES (?, ?)";
         String checkIncompatible = "SELECT COUNT(*) FROM incompatible_ingredients "
@@ -44,9 +45,6 @@ public class CustomMealService {
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
-
-                int ingredientId = rs.getInt("ingredient_id");
-
                 String category = rs.getString("dietary_category");
                 if (!checkAllergiesAndDietary(mealId, ingr, category)) {
                     conn.commit();
@@ -85,8 +83,7 @@ public class CustomMealService {
             }
 
         } catch (Exception e) {
-            System.out.println("Sorry! This ingredient is currently unavailable. Please choose another one" + ingr);
-            e.printStackTrace();
+             logger.warning(e.getMessage());
         }
 
         return false;
@@ -135,23 +132,18 @@ public class CustomMealService {
                 return rs.getInt(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return -1;
 
     }
 
 
-    public String suggestAlternetive(String ingredientName, int mealId) {
+    public String suggestAlternetive(String ingredientName, int mealId) throws SQLException {
         String customerQuery = """
                     SELECT dietary, allergies
                     FROM customer_preferences
-                    WHERE customer_id = (
-                        SELECT customer_id 
-                        FROM custom_meals 
-                        WHERE meal_id = ?
-                    )
-                """;
+                    WHERE customer_id = (SELECT customer_id  FROM custom_meals WHERE meal_id = ?)""";
 
         String inventoryQuery = """
                     SELECT name
@@ -202,7 +194,7 @@ public class CustomMealService {
             }
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
-            throw new RuntimeException("Error in suggesting an alternative", e);
+            throw new SQLException("Error in suggesting an alternative", e);
         }
     }
 }

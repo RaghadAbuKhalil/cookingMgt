@@ -12,23 +12,23 @@ import java.util.Map;
 public class InventoryService
 {
     Connection conn;
-    private final int MIN =5;
+    private final  static int min =5;
 
 
     private static InventoryService instance;
 
-    public static synchronized InventoryService getInstance() {
+    public static synchronized InventoryService getInstance() throws SQLException {
         if (instance == null) {
             instance = new InventoryService();
         }
         return instance;
     }
-   private InventoryService() {
+   private InventoryService() throws SQLException {
         try {
     conn = DatabaseConnection.getConnection();
             DatabaseSetup.setupDatabase();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
 
 
@@ -48,7 +48,7 @@ public class InventoryService
     }
 
 
-    public Map<String, Integer> getAllIngredientQuantities() {
+    public Map<String, Integer> getAllIngredientQuantities() throws SQLException {
         Map<String, Integer> quantities = new HashMap<>();
         String query = "SELECT name, quantity FROM inventory";
 
@@ -58,7 +58,7 @@ public class InventoryService
                 quantities.put(rs.getString("name"), rs.getInt("quantity"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
         return quantities;
     }
@@ -66,9 +66,9 @@ public class InventoryService
     public List<String> checkForLowStock() throws SQLException {
         List<String> lowStock = new ArrayList<>();
         String query = "SELECT name FROM inventory WHERE quantity < ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query);
+        try (PreparedStatement stmt = conn.prepareStatement(query)
             ) {
-            stmt.setInt(1,MIN);
+            stmt.setInt(1, min);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 lowStock .add(rs.getString("name"));
@@ -81,7 +81,7 @@ public class InventoryService
         String sql = "UPDATE inventory SET status = 'out of stock' WHERE name = ? and quantity < ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
-            stmt.setInt(2,MIN);
+            stmt.setInt(2, min);
             stmt.executeUpdate();
 
 
@@ -104,7 +104,7 @@ public class InventoryService
     public void saveNotificationToKitchenManager(String message) throws SQLException {
         String query = "INSERT INTO kitchen_notifications (message) VALUES (?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {;
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, message);
             stmt.executeUpdate();
         }

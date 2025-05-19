@@ -26,7 +26,7 @@ public class NotifyUsersOfLowStockIngredients {
 
 
     @Given("multiple ingredients are below the stock threshold")
-    public void multiple_ingredients_are_below_the_stock_threshold() {
+    public void multiple_ingredients_are_below_the_stock_threshold() throws SQLException {
         service = InventoryService.getInstance();
         logger.info("Low-stock ingredients added.");
     }
@@ -54,7 +54,7 @@ public class NotifyUsersOfLowStockIngredients {
 
 
     @Given("there are low-stock ingredients in the inventory")
-    public void there_are_low_stock_ingredients_in_the_inventory() {
+    public void there_are_low_stock_ingredients_in_the_inventory() throws SQLException {
         service = InventoryService.getInstance();
     }
 
@@ -94,7 +94,7 @@ public class NotifyUsersOfLowStockIngredients {
 
 
     @Given("an ingredient quantity falls below the threshold")
-    public void an_ingredient_quantity_falls_below_the_threshold() {
+    public void an_ingredient_quantity_falls_below_the_threshold() throws SQLException {
         service = InventoryService.getInstance();
         try {
 

@@ -1,9 +1,9 @@
 package org;
 
 public class Ingredient {
-    private String name;
-    private String status;
-    private String dietaryCategory;
+    private final String name;
+    private final  String status;
+    private  final String dietaryCategory;
     private int quantity;
 
     public Ingredient(String name, String status, String dietaryCategory, int quantity) {

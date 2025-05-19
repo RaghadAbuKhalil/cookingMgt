@@ -58,7 +58,7 @@ assertTrue(" meal does not  created", rs.next()&& mealId>0);
     }
 
     @When("they select available ingredients like grilled chicken, brown rice, and broccoli")
-    public void theySelectAvailableIngredientsLikeGrilledChickenBrownRiceAndBroccoli() throws SQLException {
+    public void theySelectAvailableIngredientsLikeGrilledChickenBrownRiceAndBroccoli()  {
 
 
         ingr.clear();
@@ -232,7 +232,7 @@ if (!checkAddingIng)    System.out.println("An attempt to add uncompilable  or u
     }
 
     @When("the system suggests an alternative ingredient")
-    public void theSystemSuggestsAnAlternativeIngredient() {
+    public void theSystemSuggestsAnAlternativeIngredient() throws SQLException {
         mealId = customMealService.createCustomMeal(testCustomerId, "test meal");
         suggestedAlternative = customMealService.suggestAlternetive("chicken", mealId);
         assertNotNull("A suggested alternative should be displayed ", suggestedAlternative);

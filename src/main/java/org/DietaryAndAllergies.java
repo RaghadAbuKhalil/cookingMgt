@@ -87,7 +87,7 @@ public class DietaryAndAllergies {
         return null;
     }
 
-    public static boolean checkAllergies(int customerId, String meal) {
+    public static boolean checkAllergies(int customerId, String meal) throws SQLException {
         String allergies = getCustomerAllergies(customerId);
         if (allergies == null || allergies.isEmpty()||allergies.equalsIgnoreCase("none")) {
             return false;
@@ -107,7 +107,7 @@ public class DietaryAndAllergies {
                 }
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            throw new SQLException(ex);
         }
 
     return false ;
