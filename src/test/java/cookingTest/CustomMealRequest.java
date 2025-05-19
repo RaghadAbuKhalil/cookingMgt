@@ -21,17 +21,15 @@ import static org.junit.Assert.*;
 public class CustomMealRequest {
     private static CustomMealService customMealService;
     private int mealId ;
-    private  String mealName;
     private List<String> ingr = new ArrayList<>();
     private List<String> notAvailableIngr = new ArrayList<>();
     boolean checkAddingIng=true;
     private  int testCustomerId =1 ;
     private   String suggestedAlternative;
+
     @BeforeAll
     public static void setup() {
-
         customMealService = CustomMealService.getInstance();
-
     }
     @Given("a customer wants to create a custom meal")
     public void aCustomerWantsToCreateACustomMeal() {
@@ -227,7 +225,7 @@ if (!checkAddingIng)    System.out.println("An attempt to add uncompilable  or u
     }
 
     @And("the customer tries to add {string} which is not suitable")
-    public void theCustomerTriesToAddWhichIsNotSuitable(String arg0) throws SQLException {
+    public void theCustomerTriesToAddWhichIsNotSuitable(String arg0)  {
 
         checkAddingIng = customMealService.addIngredient(mealId, arg0);
         assertFalse("Incompatible ingredient should not be added", checkAddingIng);

@@ -22,6 +22,7 @@ public class UpcomingOrdersAndDeliveries {
     int orderId ;
     int customerId;
     int chefid;
+    String taskDate;
     String  email="s12217034@stu.najah.edu";
     String mealName="meet";
     int price=19;
@@ -66,13 +67,13 @@ public class UpcomingOrdersAndDeliveries {
 
     @Given("a cooking task is scheduled for tomorrow")
     public void aCookingTaskIsScheduledForTomorrow() {
-        String taskDate = LocalDate.now().plusDays(1).toString();
-        chefid=  manager.assignTaskToChef(orderId,mealName);
+        taskDate = LocalDate.now().plusDays(1).toString();
+
     }
 
     @And("the chef is assigned to that task")
     public void theChefIsAssignedToThatTask() {
-
+        kitchenManager1.insertOrder(customerId, mealName, taskDate);
     }
 
     @When("the system runs the daily reminder job")

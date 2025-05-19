@@ -5,12 +5,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.DietaryAndAllergies;
 import org.InvoicesAndFinancial;
 import org.KitchenManagerService;
-import org.database.DatabaseConnection;
 import org.junit.Assert;
 
-import java.sql.*;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ public class generateInvoicesandTrackFinancialReports {
     String dietary="vagen";
     String  email="s12217034@stu.najah.edu";
     String allergies="meet";
-    String Date = "2025-05-25";
+    String date = "2025-05-25";
     double revenue = 0;
     Map<String, Integer> itemizedSales;
     int orderCount = 0;
@@ -42,27 +41,8 @@ public class generateInvoicesandTrackFinancialReports {
         kitchenManager1 = KitchenManagerService.getInstance();
         invoicesAndFinancial1 = new InvoicesAndFinancial();
 
-        String insertSQL = "INSERT INTO customer_preferences (dietary, email, allergies) VALUES (?, ?, ?)";
+        customerId= DietaryAndAllergies.addNewCustomer( dietary, allergies,  email);
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setString(1, dietary);
-            stmt.setString(2, email);
-            stmt.setString(3, allergies);
-
-            stmt.executeUpdate();
-
-            // الحصول على الـ ID الجديد المُنشأ تلقائيًا
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                customerId = rs.getInt(1); // تحديث قيمة customerId المتغيرة
-                System.out.println("Customer inserted successfully. Generated ID: " + customerId);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //***********************************
     orderId=kitchenManager1.insertOrder(customerId,mealName,orderDate);
 kitchenManager1.updateOrderStatus(orderId,"Completed");
 
@@ -101,14 +81,14 @@ invoicesAndFinancial1.generateInvoice(orderId);
 
     @Given("a system administrator wants to track the sales performance of the day")
     public void aSystemAdministratorWantsToTrackTheSalesPerformanceOfTheDay() {
-        logger.info("System administrator requested daily sales tracking for date: " + Date);
+        logger.info("System administrator requested daily sales tracking for date: " + date);
     }
 
     @When("the administrator requests a daily sales report")
     public void theAdministratorRequestsADailySalesReport() {
-        revenue = invoicesAndFinancial1.calculateDailyRevenue(Date);
-        itemizedSales = invoicesAndFinancial1.getItemMealSales(Date);
-        orderCount = invoicesAndFinancial1.getOrderCountForDay(Date);
+        revenue = invoicesAndFinancial1.calculateDailyRevenue(date);
+        itemizedSales = invoicesAndFinancial1.getItemMealSales(date);
+        orderCount = invoicesAndFinancial1.getOrderCountForDay(date);
         logger.info("Daily report data fetched successfully.");
     }
 

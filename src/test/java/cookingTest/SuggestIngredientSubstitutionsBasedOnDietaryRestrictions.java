@@ -24,7 +24,7 @@ private String ingredient;
     }
 
     @Given("a customer selects {string} for their custom meal")
-    public void aCustomerSelectsForTheirCustomMeal(String arg0) throws SQLException {
+    public void aCustomerSelectsForTheirCustomMeal(String arg0){
         mealId =customMealService.createCustomMeal(1,"test alternative");
 
         customMealService.addIngredient(mealId,arg0);
@@ -37,7 +37,6 @@ private String ingredient;
         String sql = "SELECT name FROM inventory WHERE name LIKE ?;\n";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-          ;
            pstmt.setString(1, "%" + arg0 + "%");
 
 
