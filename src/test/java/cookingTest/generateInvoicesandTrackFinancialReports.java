@@ -27,7 +27,7 @@ public class generateInvoicesandTrackFinancialReports {
     private static final Logger logger = Logger.getLogger(generateInvoicesandTrackFinancialReports.class.getName());
 
     String dietary="vagen";
-    String  email="s12217034@stu.najah.edu";
+    String  email="s12217035@stu.najah.edu";
     String allergies="meet";
     String date = "2025-05-25";
     double revenue = 0;
