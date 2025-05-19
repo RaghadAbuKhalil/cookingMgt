@@ -11,6 +11,7 @@ import org.junit.Assert;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,9 @@ public class UpcomingOrdersAndDeliveries {
     }
     @Given("a customer has a scheduled meal delivery for tomorrow")
     public void aCustomerHasAScheduledMealDeliveryForTomorrow() {
-        String futureDate = LocalDate.now().plusDays(1).toString();
+        LocalDate today = LocalDate.now().plusDays(1);
+        String futureDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
 
         orderId = kitchenManager1.insertOrder(customerId, mealName, futureDate);
     }
@@ -67,13 +70,16 @@ public class UpcomingOrdersAndDeliveries {
 
     @Given("a cooking task is scheduled for tomorrow")
     public void aCookingTaskIsScheduledForTomorrow() {
-        taskDate = LocalDate.now().plusDays(1).toString();
+        LocalDate today = LocalDate.now().plusDays(1);
+        String taskDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
     }
 
     @And("the chef is assigned to that task")
     public void theChefIsAssignedToThatTask() {
-        kitchenManager1.insertOrder(customerId, mealName, taskDate);
+     orderId=  kitchenManager1.insertOrder(customerId, mealName, taskDate);
+     chefid= manager.assignTaskToChef(orderId,mealName);
+
     }
 
     @When("the system runs the daily reminder job")
@@ -87,7 +93,7 @@ public class UpcomingOrdersAndDeliveries {
     @Then("the chef should receive a notification with the meal details and preparation time")
     public void theChefShouldReceiveANotificationWithTheMealDetailsAndPreparationTime() {
         notificationList=   notification.getNotificationsListForChef(chefid);
-        Assert.assertNotNull("notification in their task list",notificationList.contains(mealName));
+        Assert.assertTrue("notification in their task list",notificationList.contains("New Task Assigned: "+mealName));
 
     }
 

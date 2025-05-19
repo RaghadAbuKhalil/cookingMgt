@@ -34,7 +34,6 @@ public class NotificationService {
 
             int rowsInserted = stmtInsert.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Notification sent to Chef ID: " + chefId + " for task: " + taskName);
                 return "Notification sent to Chef ID: " + chefId + " for task: " + taskName;
             } else {
                 System.out.println("Chef ID '" + chefId + "' not found in database.");
@@ -46,24 +45,6 @@ public class NotificationService {
         }
     }
 
-
-    public String getChefNotifications(int chefid) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT task_name FROM notifications WHERE chef_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, String.valueOf(chefid));
-            ResultSet rs = stmt.executeQuery();
-
-            StringBuilder notifications = new StringBuilder();
-            while (rs.next()) {
-                notifications.append(rs.getString("task_name"));
-            }
-            return notifications.toString();
-        } catch (SQLException e) {
-            logger.warning(e.getMessage());
-        }
-        return "No notifications";
-    }
 
     public List<String> getNotificationsListForChef(int chefId) {
         List<String> notificationsList = new ArrayList<>();

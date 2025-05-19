@@ -305,7 +305,7 @@ String mealName="meal_name";
                 String dateStr = rs.getString("order_date");
 
                 try {
-                    LocalDate orderDate = LocalDate.parse(dateStr); // صيغة yyyy-MM-dd فقط
+                    LocalDate orderDate = LocalDate.parse(dateStr);
                     if (ChronoUnit.HOURS.between(LocalDate.now().atStartOfDay(), orderDate.atStartOfDay()) <= 24) {
                         String email = getCustomerEmail(custId);
                         sendInvoiceEmail(email, "Upcoming Delivery Reminder", "Your meal will be delivered tomorrow!");

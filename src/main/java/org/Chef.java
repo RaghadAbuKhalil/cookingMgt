@@ -2,7 +2,6 @@ package org;
 
 import org.database.DatabaseConnection;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,10 @@ public class Chef {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
-        return chefId;
+        finally {
+            return chefId;
+        }
+
     }
 
          public void setChefJobload(int chefId, int jobload) {
@@ -77,6 +79,9 @@ public class Chef {
             stmt.executeUpdate();
         } catch (SQLException e) {
             logger.warning(e.getMessage());
+        }
+        finally {
+            logger.info("The status changed to in progress");
         }
     }
 
@@ -114,7 +119,10 @@ public class Chef {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
-        return list;
+        finally {
+            return list;
+        }
+
     }
 
 

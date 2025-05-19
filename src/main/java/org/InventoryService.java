@@ -79,10 +79,19 @@ public class InventoryService
     }
     public void  updateStatusToOutOfStock(String name) throws SQLException {
         String sql = "UPDATE inventory SET status = 'out of stock' WHERE name = ? and quantity < ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, min);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        finally {
+            System.out.println("the status updated yo out of stock");
+        }
+
 
 
 }

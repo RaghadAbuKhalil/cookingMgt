@@ -25,8 +25,7 @@ public class TaskManager {
         return instance;
     }
 
-
-    public void assignTaskToChef(int orderId, String mealName) {
+    public int assignTaskToChef(int orderId, String mealName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
 
 
@@ -43,7 +42,7 @@ public class TaskManager {
 
             if (chefId == -1) {
                 System.out.println("No available chefs to assign the task.");
-              return;
+                return chefId;
             }
 
             String insertTaskQuery = "INSERT INTO tasks (order_id, chef_id, task_name, status) VALUES (?, ?, ?, 'Acknowledge')";
@@ -54,13 +53,12 @@ public class TaskManager {
                 stmt.executeUpdate();
                 NotificationService.getInstance().sendNotification(chefId, "New Task Assigned: " + mealName);
             }
-
+            return chefId;
         } catch (SQLException e) {
-            logger.warning(e.getMessage());
+           logger.info(e.getMessage());
         }
-
+        return -1;
     }
-
     public String TaskStatus(String taskName, int chefid) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT status FROM tasks WHERE task_name = ? AND chef_id = ?";
@@ -128,8 +126,10 @@ public class TaskManager {
                 logger.warning(e.getMessage());
             }
 
+finally {
+                return selectedChefId;
+            }
 
-            return selectedChefId;
         }
 
 }

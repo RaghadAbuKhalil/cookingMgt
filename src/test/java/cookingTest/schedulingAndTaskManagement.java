@@ -84,9 +84,9 @@ public class schedulingAndTaskManagement {
 
     @And("the chef should receive a notification about the new task")
     public void theChefShouldReceiveANotificationAboutTheNewTask() {
-        String notificationmsg = notification1.getChefNotifications(chefid2);
+      List<String> notificationmsg = notification1.getNotificationsListForChef(chefid);
 
-        Assert.assertEquals("Chef receive notification", notificationmsg, mealname);
+        Assert.assertTrue("Chef receive notification", notificationmsg.contains(mealname));
 
         System.out.println("Notification message: " + notificationmsg);
     }
@@ -100,9 +100,9 @@ public class schedulingAndTaskManagement {
 
     @When("the system sends a notification to the chef")
     public void theSystemSendsANotificationToTheChef() {
-        String notificationmsg = notification1.getChefNotifications(chefid1);
+        List <String> notificationmsg = notification1.getNotificationsListForChef(chefid1);
 
-        Assert.assertEquals("Chef receive notification", notificationmsg, mealname);
+        Assert.assertTrue("Chef receive notification", notificationmsg.contains(mealname));
 
         System.out.println("Notification message: " + notificationmsg);
     }
@@ -111,7 +111,7 @@ public class schedulingAndTaskManagement {
     public void theChefShouldSeeTheTaskNotificationInTheirTaskList() {
 
         notificationList= notification1.getNotificationsListForChef( chefid1);
-        Assert.assertNotNull("notification in their task list",notificationList.contains(mealname));
+        Assert.assertTrue("notification in their task list",notificationList.contains(mealname));
 
     }
 
