@@ -22,7 +22,7 @@ public class CustomMealService {
         return instance;
     }
 
-    private  CustomMealService() {
+    private CustomMealService() {
         DatabaseSetup.setupDatabase();
 
     }
@@ -39,8 +39,6 @@ public class CustomMealService {
                 + "OR ingredient2 IN (SELECT ingredientName FROM custom_meal_ingredients WHERE mealId = ?)))";
 
 
-
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement checkStmt = conn.prepareStatement(check)) {
             conn.setAutoCommit(false);
@@ -51,15 +49,13 @@ public class CustomMealService {
 
             if (rs.next()) {
 
-                 int  ingredientId = rs.getInt("ingredient_id");
+                int ingredientId = rs.getInt("ingredient_id");
 
                 String category = rs.getString("dietary_category");
                 if (!checkAllergiesAndDietary(mealId, ingr, category)) {
                     conn.commit();
                     return false;
-                }
-
-else {
+                } else {
                     System.out.println("Ingredient available: " + ingr);
                     try (PreparedStatement stmt = conn.prepareStatement(checkIncompatible)) {
                         stmt.setString(1, ingr);
@@ -87,7 +83,7 @@ else {
                 }
             } else {
                 System.out.println("Ingredient unavailable: " + ingr);
-                suggestAlternetive(ingr,mealId);
+                suggestAlternetive(ingr, mealId);
                 conn.commit();
                 return false;
             }
@@ -111,14 +107,14 @@ else {
             if (allergyResult.next()) {
                 String dietary = allergyResult.getString(1);
                 String allergy = allergyResult.getString(2);
-                 if (allergy != null&&!allergy.toLowerCase().equals("none") && allergy.toLowerCase().equals(ingr.toLowerCase())) {
+                if (allergy != null && !allergy.equalsIgnoreCase("none") && allergy.equalsIgnoreCase(ingr)) {
                     System.out.println("Customer has an  allergy to " + ingr);
-                     suggestAlternetive(ingr,mealId);
+                    suggestAlternetive(ingr, mealId);
                     return false;
                 }
-                if (dietary.equals("vegan") && category.toLowerCase().equals("Non-vegetarian".toLowerCase())) {
+                if (dietary.equalsIgnoreCase("vegan") && category.equalsIgnoreCase("Non-vegetarian")) {
                     System.out.println(ingr + " is not suitable a vegan diet.");
-                    suggestAlternetive(ingr,mealId);
+                    suggestAlternetive(ingr, mealId);
                     return false;
                 }
 
@@ -150,7 +146,7 @@ else {
     }
 
 
-    public String suggestAlternetive( String ingredientName,int mealId) {
+    public String suggestAlternetive(String ingredientName, int mealId) {
         String customerQuery = """
                     SELECT dietary, allergies
                     FROM customer_preferences
@@ -166,7 +162,7 @@ else {
                     FROM inventory
                     WHERE status = 'available'
                       AND dietary_category = ?
-           
+                
                       AND name NOT IN (
                           SELECT name
                           FROM inventory
@@ -213,33 +209,7 @@ else {
             throw new RuntimeException("Error in suggesting an alternative", e);
         }
     }
-    public static void showCustomMeals(int customerId) {
-        String sql = "SELECT meal_name FROM custom_meals WHERE customer_id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, customerId);
-            ResultSet rs = pstmt.executeQuery();
-
-            System.out.println("\n--- Custom Meals for Customer ID: " + customerId + " ---");
-            boolean found = false;
-            while (rs.next()) {
-                found = true;
-                String mealName = rs.getString("meal_name");
-                System.out.println("- " + mealName);
-            }
-
-            if (!found) {
-                System.out.println("No custom meals found for this customer.");
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error while retrieving custom meals: " + e.getMessage());
-        }
-    }
 }
-
 
 
 

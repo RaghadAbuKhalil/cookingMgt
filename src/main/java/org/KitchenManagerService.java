@@ -2,15 +2,8 @@ package org;
 
 import org.database.DatabaseConnection;
 
-import javax.swing.*;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
-import javax.swing.JOptionPane;
-import org.database.DatabaseConnection;
+
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -107,29 +100,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
         return orderId;
     }
 
-      public void printAllTasks (){
-          String sql = "SELECT  task_name, status, expertise_required FROM tasks";
 
-          try (Connection conn = DatabaseConnection.getConnection();
-               PreparedStatement pstmt = conn.prepareStatement(sql);
-               ResultSet rs = pstmt.executeQuery()) {
-
-              System.out.println("---- Tasks Summary ----");
-              while (rs.next()) {
-
-                  String name = rs.getString("task_name");
-                  String status = rs.getString("status");
-                  String expertise = rs.getString("expertise_required");
-
-                  System.out.println( "Name: " + name +
-                          " | Status: " + status +
-                          " | Expertise: " + (expertise != null ? expertise : "None"));
-              }
-
-          } catch (SQLException e) {
-              System.out.println( e.getMessage());
-          }
-      }
 
     public void updateOrderStatus(int orderId, String newStatus) {
         String updateStatusSQL = "UPDATE orders SET status = ? WHERE order_id = ?";
@@ -139,9 +110,6 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             stmt.setString(1, newStatus);
             stmt.setInt(2, orderId);
             stmt.executeUpdate();
-/*if (newStatus.equals("Completed")){
-generateInvoice(orderId);
-}*/
             System.out.println("Order ID: " + orderId + " status updated to " + newStatus);
         } catch (SQLException e) {
             e.printStackTrace();

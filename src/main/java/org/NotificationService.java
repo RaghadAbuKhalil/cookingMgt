@@ -87,7 +87,7 @@ public class NotificationService {
 
         return notificationsList;
     }
-    public  void sendChefRemindersForTomorrow() throws InterruptedException {
+    public  boolean sendChefRemindersForTomorrow() throws InterruptedException {
 
 
         String query = "SELECT t.task_name, t.chef_id " +
@@ -99,13 +99,17 @@ public class NotificationService {
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
+
             while (rs.next()) {
                 String taskName = rs.getString("task_name");
                 int chefId = rs.getInt("chef_id");
                 sendNotification(chefId, taskName);
+
             }
+            return true ;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false ;
         }
     }
 

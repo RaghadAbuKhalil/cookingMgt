@@ -577,5 +577,54 @@ public class Main {
             e.printStackTrace();
         }
     }
+    public void printAllTasks (){
+          String sql = "SELECT  task_name, status, expertise_required FROM tasks";
+
+          try (Connection conn = DatabaseConnection.getConnection();
+               PreparedStatement pstmt = conn.prepareStatement(sql);
+               ResultSet rs = pstmt.executeQuery()) {
+
+              System.out.println("---- Tasks Summary ----");
+              while (rs.next()) {
+
+                  String name = rs.getString("task_name");
+                  String status = rs.getString("status");
+                  String expertise = rs.getString("expertise_required");
+
+                  System.out.println( "Name: " + name +
+                          " | Status: " + status +
+                          " | Expertise: " + (expertise != null ? expertise : "None"));
+              }
+
+          } catch (SQLException e) {
+              System.out.println( e.getMessage());
+          }
+      }
+          public static void showCustomMeals(int customerId) {
+        String sql = "SELECT meal_name FROM custom_meals WHERE customer_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("\n--- Custom Meals for Customer ID: " + customerId + " ---");
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                String mealName = rs.getString("meal_name");
+                System.out.println("- " + mealName);
+            }
+
+            if (!found) {
+                System.out.println("No custom meals found for this customer.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving custom meals: " + e.getMessage());
+        }
+    }
+
 }
 */

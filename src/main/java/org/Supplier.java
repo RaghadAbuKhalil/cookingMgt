@@ -18,20 +18,7 @@ public class Supplier {
             throw new RuntimeException(e);
         }
     }
-        public void addOrUpdateSupplierPrice( String ingredient, String supplierName, double price) throws SQLException {
 
-            String sql =  "INSERT INTO suppliers (ingredient_name, supplier_name, price) " +
-                    "VALUES (?, ?, ?) " +
-                    "ON CONFLICT(ingredient_name, supplier_name) " +
-                    "DO UPDATE SET price = excluded.price";
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, ingredient);
-                stmt.setString(2, supplierName);
-                stmt.setDouble(3, price);
-                stmt.executeUpdate();
-            }
-    }
     public double getRealTimePrice(String ingredient) throws SQLException {
         String sql = "SELECT price FROM suppliers WHERE ingredient_name = ? LIMIT 1";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

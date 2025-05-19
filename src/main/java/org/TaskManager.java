@@ -1,20 +1,18 @@
 package org;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import org.database.DatabaseConnection;
 
-import javax.swing.*;
 
 public class TaskManager {
-    private Chef chef1;
+
 
     private static TaskManager instance;
 
     public TaskManager() {
-        chef1 = new Chef();
+         Chef chef = new Chef();
 
     }
 

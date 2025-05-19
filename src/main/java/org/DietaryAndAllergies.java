@@ -118,8 +118,5 @@ public class DietaryAndAllergies {
     return false ;
     }
 
-    public static void main(String[] args) {
-
-    }
 
 }

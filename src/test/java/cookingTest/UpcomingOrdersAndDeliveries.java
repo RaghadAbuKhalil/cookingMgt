@@ -26,7 +26,7 @@ public class UpcomingOrdersAndDeliveries {
     String mealName="meet";
     int price=19;
     String orderDate="2025-05-10";
-
+    boolean check;
     List notificationList= new ArrayList<String>();
     @Before()
     public void setup(){
@@ -78,13 +78,16 @@ public class UpcomingOrdersAndDeliveries {
     @When("the system runs the daily reminder job")
     public void theSystemRunsTheDailyReminderJob() throws InterruptedException {
         synchronized (this) {
-            notification.sendChefRemindersForTomorrow();
-        }}
+           check=   notification.sendChefRemindersForTomorrow();
+        }
+        Assert.assertTrue("the Reminder must be send ",check);
+    }
 
     @Then("the chef should receive a notification with the meal details and preparation time")
     public void theChefShouldReceiveANotificationWithTheMealDetailsAndPreparationTime() {
         notificationList=   notification.getNotificationsListForChef(chefid);
         Assert.assertNotNull("notification in their task list",notificationList.contains(mealName));
+
     }
 
     @Given("there are no deliveries or cooking tasks scheduled in the next {int} hours")
