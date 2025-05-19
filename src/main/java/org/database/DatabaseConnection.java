@@ -13,14 +13,6 @@ public class DatabaseConnection {
 
     public static Connection getConnection() throws SQLException {
         Connection conn = DriverManager.getConnection(URL);
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("PRAGMA journal_mode=WAL");
-            stmt.execute("PRAGMA busy_timeout = 3000");
-        } catch (SQLException e) {
-            logger.warning("Error setting PRAGMA: "+ e.getMessage());
-
-        }
         return conn;
 
     }

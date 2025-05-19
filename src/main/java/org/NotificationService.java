@@ -8,12 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class NotificationService {
 
     private static NotificationService instance;
+    private static final Logger logger = Logger.getLogger(NotificationService.class.getName());
 
-   private NotificationService() {
+    private NotificationService() {
 
     }
 
@@ -58,7 +60,7 @@ public class NotificationService {
             }
             return notifications.toString();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return "No notifications";
     }
@@ -78,12 +80,12 @@ public class NotificationService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
         return notificationsList;
     }
-    public  boolean sendChefRemindersForTomorrow() throws InterruptedException {
+    public  boolean sendChefRemindersForTomorrow()  {
 
 
         String query = "SELECT t.task_name, t.chef_id " +
@@ -104,7 +106,7 @@ public class NotificationService {
             }
             return true ;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
             return false ;
         }
     }

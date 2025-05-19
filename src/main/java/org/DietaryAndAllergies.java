@@ -4,8 +4,10 @@ import org.database.DatabaseConnection;
 import org.database.DatabaseSetup;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
 public class DietaryAndAllergies {
+    private static final Logger logger = Logger.getLogger(DietaryAndAllergies.class.getName());
 
     private static DietaryAndAllergies instance;
 
@@ -46,7 +48,7 @@ public class DietaryAndAllergies {
             return customerId;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
         return -1;
@@ -64,7 +66,7 @@ public class DietaryAndAllergies {
                 return rs.getString("allergies");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
 
@@ -82,7 +84,7 @@ public class DietaryAndAllergies {
                 return rs.getString("dietary");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return null;
     }

@@ -3,9 +3,11 @@ package org;
 import org.database.DatabaseConnection;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
 public class Chef {
     private static Chef instance;
+    private static final Logger logger = Logger.getLogger(Chef.class.getName());
 
     private Chef() {
     }
@@ -34,7 +36,7 @@ public class Chef {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return chefId;
     }
@@ -56,7 +58,7 @@ public class Chef {
                  }
 
              } catch (SQLException e) {
-                 e.printStackTrace();
+                 logger.warning(e.getMessage());
              }
          }
 
@@ -71,7 +73,7 @@ public class Chef {
             stmt.setString(2, String.valueOf(chefid));
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
     }
 
@@ -86,14 +88,14 @@ public class Chef {
             stmt.setString(2, String.valueOf(chefId));
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
     }
 
     public void printAllChefs() {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT * FROM CHEFS";
+            String sql = "SELECT  FROM CHEFS";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -104,7 +106,7 @@ public class Chef {
                 System.out.println("Chef ID: " + chefId + ", Name: " + chefName + ", Expertise: " + expertise + ", Jobload: " + jobload);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
     }
 

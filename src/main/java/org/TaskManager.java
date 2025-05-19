@@ -1,19 +1,21 @@
 package org;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
 
 import org.database.DatabaseConnection;
+import org.database.DatabaseSetup;
 
 
 public class TaskManager {
 
+    private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
 
     private static TaskManager instance;
 
    private TaskManager() {
-         Chef chef = Chef.getInstance();
-
+       DatabaseSetup.setupDatabase();
     }
 
     public static synchronized TaskManager getInstance() {
@@ -24,7 +26,7 @@ public class TaskManager {
     }
 
 
-    public int assignTaskToChef(int orderId, String mealName) {
+    public void assignTaskToChef(int orderId, String mealName) {
         try (Connection conn = DatabaseConnection.getConnection()) {
 
 
@@ -41,7 +43,7 @@ public class TaskManager {
 
             if (chefId == -1) {
                 System.out.println("No available chefs to assign the task.");
-                return chefId;
+              return;
             }
 
             String insertTaskQuery = "INSERT INTO tasks (order_id, chef_id, task_name, status) VALUES (?, ?, ?, 'Acknowledge')";
@@ -52,11 +54,11 @@ public class TaskManager {
                 stmt.executeUpdate();
                 NotificationService.getInstance().sendNotification(chefId, "New Task Assigned: " + mealName);
             }
-            return chefId;
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
-        return -1;
+
     }
 
     public String TaskStatus(String taskName, int chefid) {
@@ -82,7 +84,7 @@ public class TaskManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return null;
     }
@@ -93,39 +95,37 @@ public class TaskManager {
             String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Acknowledge')";
             String updateLoadSql = "UPDATE CHEFS SET jobload = jobload + 1 WHERE chef_id = ?";
             int selectedChefId = -1;
-            try (Connection conn = DatabaseConnection.getConnection()) {
-
-
-                try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(selectSql)) {
                     stmt.setString(1, requiredExpertise);
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
                         selectedChefId = rs.getInt("chef_id");
+                        PreparedStatement    stmt1 = conn.prepareStatement(insertTaskSql);
+                            stmt1.setString(1, taskName);
+                            stmt1.setInt(2, selectedChefId);
+                            stmt1.executeUpdate();
+
+
+
+                        try (PreparedStatement stmt2 = conn.prepareStatement(updateLoadSql)) {
+                            stmt2.setInt(1, selectedChefId);
+                            stmt2.executeUpdate();
+                        }
+
+
+                        System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
 
                     } else {
                         System.out.println("No chef found with expertise: " + requiredExpertise);
                         return -1;
                     }
-                }
 
 
-                try (PreparedStatement stmt = conn.prepareStatement(insertTaskSql)) {
-                    stmt.setString(1, taskName);
-                    stmt.setInt(2, selectedChefId);
-                    stmt.executeUpdate();
-                }
 
-
-                try (PreparedStatement stmt = conn.prepareStatement(updateLoadSql)) {
-                    stmt.setInt(1, selectedChefId);
-                    stmt.executeUpdate();
-                }
-
-
-                System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.warning(e.getMessage());
             }
 
 

@@ -11,13 +11,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class KitchenManagerService {
     private static KitchenManagerService instance;
+    private static final Logger logger = Logger.getLogger(KitchenManagerService.class.getName());
 
     TaskManager  taskAssignment;
-    private NotificationService notificationService;
-  private Connection conn;
+    private final  NotificationService notificationService;
+  private  final Connection conn;
     public static synchronized KitchenManagerService getInstance() {
         if (instance == null) {
             instance = new KitchenManagerService();
@@ -59,7 +61,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
 
         try (Connection conn = DatabaseConnection.getConnection()) {
 
-            double price = 0.0;
+            double price = 0.00;
             try (PreparedStatement fetchStmt = conn.prepareStatement(fetchPriceSQL)) {
                 fetchStmt.setString(1, mealName);
                 ResultSet rs = fetchStmt.executeQuery();
@@ -90,7 +92,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
         return orderId;
@@ -108,7 +110,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             stmt.executeUpdate();
             System.out.println("Order ID: " + orderId + " status updated to " + newStatus);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
     }
     public String getOrderStatus(int orderId) {
@@ -127,7 +129,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
                 System.out.println("No order found with ID: " + orderId);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return null;
     }
@@ -190,7 +192,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
         return null;

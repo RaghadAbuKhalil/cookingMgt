@@ -3,10 +3,13 @@ package org;
 import org.database.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class OrderHistoryService {
     private static OrderHistoryService instance;
-private KitchenManagerService kitchenManagerService;
+private final  KitchenManagerService kitchenManagerService;
+    private static final Logger logger = Logger.getLogger(OrderHistoryService.class.getName());
+
     private OrderHistoryService() {
 
         kitchenManagerService= KitchenManagerService.getInstance();
@@ -35,7 +38,7 @@ private KitchenManagerService kitchenManagerService;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return orderList;
     }
@@ -64,7 +67,7 @@ private KitchenManagerService kitchenManagerService;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return trends;
     }

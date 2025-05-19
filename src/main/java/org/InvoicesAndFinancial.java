@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class InvoicesAndFinancial {
     private static final Logger logger = Logger.getLogger(InvoicesAndFinancial.class.getName());
-
+String mealName="meal_name";
     public void generateInvoice(int orderId) {
         String query = "SELECT meal_name, price, status, order_date FROM ORDERS WHERE order_id = ?";
         String insertInvoice = "INSERT INTO INVOICES (order_id, meal_name, price, quantity, total_price, status, order_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -36,7 +36,7 @@ public class InvoicesAndFinancial {
                 double totalPrice = price * quantity;
 
                 stmt2.setInt(1, orderId);
-                stmt2.setString(2, rs.getString("meal_name"));
+                stmt2.setString(2, rs.getString(mealName));
                 stmt2.setDouble(3, price);
                 stmt2.setInt(4, quantity);
                 stmt2.setDouble(5, totalPrice);
@@ -51,7 +51,7 @@ public class InvoicesAndFinancial {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
     }
 
@@ -66,14 +66,14 @@ public class InvoicesAndFinancial {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String mealName = rs.getString("meal_name");
+                String mealName1 = rs.getString(mealName);
                 double price = rs.getDouble("price");
                 int quantity = rs.getInt("quantity");
                 double totalPrice = rs.getDouble("total_price");
                 String status = rs.getString("status");
 
                 String message = "=== Invoice ===\n"
-                        + "Meal: " + mealName + "\n"
+                        + "Meal: " + mealName1 + "\n"
                         + "Price: " + price + "\n"
                         + "Quantity: " + quantity + "\n"
                         + "Total: " + totalPrice + "\n"
@@ -112,7 +112,7 @@ public class InvoicesAndFinancial {
                 email = rs.getString("email");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
 
         return email;
@@ -149,7 +149,7 @@ public class InvoicesAndFinancial {
             System.out.println("Email sent successfully to " + toEmail);
             return true;
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
         return false;
     }
@@ -189,10 +189,10 @@ public class InvoicesAndFinancial {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String mealName = rs.getString("meal_name");
+                String mealName1 = rs.getString(mealName);
                 int quantity = rs.getInt("total_sold");
-                mealSales.put(mealName, quantity);
-                logger.info("Meal: " + mealName + ", Quantity Sold: " + quantity);
+                mealSales.put(mealName1, quantity);
+                logger.info("Meal: " + mealName1 + ", Quantity Sold: " + quantity);
             }
         } catch (SQLException e) {
             logger.severe("Error fetching itemized meal sales: " + e.getMessage());
@@ -238,7 +238,7 @@ public class InvoicesAndFinancial {
                 totalRevenue = rs.getDouble(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
             //JOptionPane.showMessageDialog(null, "Total Revenue for the Month: $" + totalRevenue, "Monthly Revenue", JOptionPane.INFORMATION_MESSAGE);
         System.out.println("Total Revenue for the Month: $" + totalRevenue);
@@ -259,14 +259,13 @@ public class InvoicesAndFinancial {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                revenueByType.put(rs.getString("meal_name"), rs.getDouble("total"));
+                revenueByType.put(rs.getString(mealName), rs.getDouble("total"));
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
-        //JOptionPane.showMessageDialog(null, revenueByType.toString(), "Revenue Breakdown", JOptionPane.INFORMATION_MESSAGE);
-        System.out.println(revenueByType.toString());
+        System.out.println(revenueByType);
         return revenueByType;
     }
 
@@ -284,13 +283,13 @@ public class InvoicesAndFinancial {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                mealOrders.put(rs.getString("meal_name"), rs.getInt("total_ordered"));
+                mealOrders.put(rs.getString(mealName), rs.getInt("total_ordered"));
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
-      //  JOptionPane.showMessageDialog(null, mealOrders.toString(), "Most Ordered Meals", JOptionPane.INFORMATION_MESSAGE);
+
         return mealOrders;
     }
 
@@ -318,7 +317,7 @@ public class InvoicesAndFinancial {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warning(e.getMessage());
         }
     }
 
