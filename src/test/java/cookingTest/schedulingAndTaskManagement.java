@@ -63,8 +63,9 @@ public class schedulingAndTaskManagement {
 
         chefid2=chef1.addChef("chef4",  "Advanced Level");
         chef1.setChefJobload(chefid2,3);
-        chef1.printAllChefs();
-
+        List<String> list = chef1.printAllChefs();
+        Assert.assertNotNull("Cannot exist the chefs list",list);
+        Assert.assertFalse("there is no chefs in the system",list.isEmpty());
     }
 
     @When("the kitchen manager assigns the task {string}")

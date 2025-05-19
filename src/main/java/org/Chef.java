@@ -3,6 +3,8 @@ package org;
 import org.database.DatabaseConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Chef {
@@ -93,7 +95,8 @@ public class Chef {
 
     }
 
-    public void printAllChefs() {
+    public List<String> printAllChefs() {
+        List<String> list  = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "SELECT  FROM CHEFS";
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -103,11 +106,12 @@ public class Chef {
                 String chefName = rs.getString("chef_name");
                 String expertise = rs.getString("expertise");
                 int jobload = rs.getInt("jobload");
-                System.out.println("Chef ID: " + chefId + ", Name: " + chefName + ", Expertise: " + expertise + ", Jobload: " + jobload);
+                list.add("Chef ID: " + chefId + ", Name: " + chefName + ", Expertise: " + expertise + ", Jobload: " + jobload);
             }
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
+        return list;
     }
 
 
