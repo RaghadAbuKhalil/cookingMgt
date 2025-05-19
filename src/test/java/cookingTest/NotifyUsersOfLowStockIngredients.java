@@ -75,7 +75,7 @@ public class NotifyUsersOfLowStockIngredients {
 
     @Then("the kitchen manager should receive a notification about them")
     public void the_kitchen_manager_should_receive_a_notification_about_them() throws SQLException {
-        KitchenManagerService manager = new KitchenManagerService();
+        KitchenManagerService manager = KitchenManagerService.getInstance();
         lowStock = service.checkForLowStock();
         for (String ingredient : lowStock) {
             boolean found = false;

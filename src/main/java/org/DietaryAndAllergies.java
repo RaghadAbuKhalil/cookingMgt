@@ -89,7 +89,7 @@ public class DietaryAndAllergies {
 
     public static boolean checkAllergies(int customerId, String meal) {
         String allergies = getCustomerAllergies(customerId);
-        if (allergies == null || allergies.isEmpty()||allergies.toLowerCase().equals("none")) {
+        if (allergies == null || allergies.isEmpty()||allergies.equalsIgnoreCase("none")) {
             return false;
         }
         String ingredientsQuery = "SELECT ingredient FROM meal_ingredients " +
