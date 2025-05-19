@@ -50,8 +50,7 @@ public class KitchenManagerService {
 
 
 public String getTaskStatusForKitchenManager(String taskName,int chefId){
-    String status;
-       return status=  taskAssignment.TaskStatus(taskName,chefId);
+        return taskAssignment.TaskStatus(taskName,chefId);
 }
 
 
@@ -108,7 +107,29 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
         return orderId;
     }
 
+      public void printAllTasks (){
+          String sql = "SELECT  task_name, status, expertise_required FROM tasks";
 
+          try (Connection conn = DatabaseConnection.getConnection();
+               PreparedStatement pstmt = conn.prepareStatement(sql);
+               ResultSet rs = pstmt.executeQuery()) {
+
+              System.out.println("---- Tasks Summary ----");
+              while (rs.next()) {
+
+                  String name = rs.getString("task_name");
+                  String status = rs.getString("status");
+                  String expertise = rs.getString("expertise_required");
+
+                  System.out.println( "Name: " + name +
+                          " | Status: " + status +
+                          " | Expertise: " + (expertise != null ? expertise : "None"));
+              }
+
+          } catch (SQLException e) {
+              System.out.println( e.getMessage());
+          }
+      }
 
     public void updateOrderStatus(int orderId, String newStatus) {
         String updateStatusSQL = "UPDATE orders SET status = ? WHERE order_id = ?";
@@ -146,14 +167,6 @@ generateInvoice(orderId);
         }
         return null;
     }
-
-
-
-
-
-
-
-
 
     public List<String> getNotifications() {
         List<String> notifications = new ArrayList<>();
@@ -218,47 +231,7 @@ generateInvoice(orderId);
 
         return null;
     }
-    public static void addMealWithIngredients(String mealName, double price, List<String> ingredients) {
-        String insertMealSQL = "INSERT INTO menu_items (name, price) VALUES (?, ?)";
-        String insertIngredientSQL = "INSERT INTO meal_ingredients (menu_item_id, ingredient) VALUES (?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false);
-
-            int mealId;
-
-            // أولاً: إدخال الوجبة
-            try (PreparedStatement mealStmt = conn.prepareStatement(insertMealSQL, Statement.RETURN_GENERATED_KEYS)) {
-                mealStmt.setString(1, mealName);
-                mealStmt.setDouble(2, price);
-                mealStmt.executeUpdate();
-
-                try (ResultSet generatedKeys = mealStmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        mealId = generatedKeys.getInt(1);
-                    } else {
-                        throw new SQLException("Failed to retrieve meal ID.");
-                    }
-                }
-            }
-
-
-            try (PreparedStatement ingredientStmt = conn.prepareStatement(insertIngredientSQL)) {
-                for (String ingredient : ingredients) {
-                    ingredientStmt.setInt(1, mealId);
-                    ingredientStmt.setString(2, ingredient);
-                    ingredientStmt.addBatch();
-                }
-                ingredientStmt.executeBatch();
-            }
-
-            conn.commit();
-            System.out.println("Meal and ingredients added successfully!");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

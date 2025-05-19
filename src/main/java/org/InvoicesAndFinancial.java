@@ -84,12 +84,10 @@ public class InvoicesAndFinancial {
                         + "Quantity: " + quantity + "\n"
                         + "Total: " + totalPrice + "\n"
                         + "Status: " + status;
-                   System.out.println(message);
-                //JOptionPane.showMessageDialog(null, message, "Invoice", JOptionPane.INFORMATION_MESSAGE);
+
                 return message;
             } else {
-              //  JOptionPane.showMessageDialog(null, "No invoice found for orderId: " + orderId,
-                    //    "Invoice Not Found", JOptionPane.WARNING_MESSAGE);
+
                 System.out.println("No invoice found for orderId: " + orderId);
             }
 

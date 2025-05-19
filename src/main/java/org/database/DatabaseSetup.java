@@ -98,12 +98,13 @@ public class DatabaseSetup {
                      "    supplier_id INTEGER,\n" +
                      "    status TEXT\n" +
                      ");\n";
-            String menu = "CREATE TABLE  IF NOT EXISTS menu_items (\n" +
-                    "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                    "    name TEXT UNIQUE NOT NULL\n" +
-                    " price REAL NOT NULL DEFAULT 0.0"+
-                    ");\n";
-            String meal_ingredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
+        String menu = "CREATE TABLE IF NOT EXISTS menu_items (\n" +
+                "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "    name TEXT UNIQUE NOT NULL,\n" +  // لاحظ الفاصلة هون
+                "    price REAL NOT NULL DEFAULT 0.0\n" +
+                ");";
+
+        String meal_ingredients="CREATE TABLE  IF NOT EXISTS meal_ingredients (\n" +
                     "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                     "    menu_item_id INTEGER,\n" +
                     "    ingredient TEXT NOT NULL,\n" +
@@ -127,10 +128,11 @@ public class DatabaseSetup {
         stmt.executeUpdate(customMealIngredients);
          stmt.execute(suppliers);
          stmt.execute(purchase_orders);
-   stmt.execute(menu);
+        stmt.execute(menu);
    stmt.execute(meal_ingredients);
 
             stmt.execute("PRAGMA foreign_keys = ON;");
+
           //  System.out.println("Database created successfully");
 
 

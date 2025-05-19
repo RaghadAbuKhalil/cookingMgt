@@ -19,7 +19,7 @@ public class InventoryService
 
     public static InventoryService getInstance() {
         if (instance == null) {
-            synchronized (InventoryService.class) {  // Thread safety
+            synchronized (InventoryService.class) {
                 if (instance == null) {
                     instance = new InventoryService();
                 }
@@ -38,7 +38,7 @@ public class InventoryService
 
     }
 
-    public  static void addOrUpdateIngredient(Ingredient ingredient) throws SQLException{
+    public  void addOrUpdateIngredient(Ingredient ingredient) throws SQLException{
         String query = "INSERT INTO inventory (name, status, dietary_category, quantity) VALUES (?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET quantity = excluded.quantity, status = excluded.status, dietary_category = excluded.dietary_category";
         try (
             Connection    conn = DatabaseConnection.getConnection();

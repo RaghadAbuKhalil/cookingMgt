@@ -28,8 +28,6 @@ public class IntegrateWithSuppliersForRealTimePricingAndOrdering {
     }
     @When("the manager checks the price of {string}")
     public void theManagerChecksThePriceOf(String string) throws SQLException {
-        supplier.addOrUpdateSupplierPrice(string ,"hiba",200.5);
-        supplier.addOrUpdateSupplierPrice(string ,"raghad",300.5);
 
         price=supplier.getRealTimePrice(string);
 
@@ -85,8 +83,7 @@ public class IntegrateWithSuppliersForRealTimePricingAndOrdering {
     public void isAvailableFromMultipleSuppliers(String string) throws SQLException {
         boolean available = false;
         try {
-            supplier.addOrUpdateSupplierPrice(string ,"hiba",200.5);
-            supplier.addOrUpdateSupplierPrice(string ,"raghad",500);
+
             available = supplier.isAvailableFromMultipleSuppliers(string);
         } catch (SQLException e) {
             throw new RuntimeException(e);

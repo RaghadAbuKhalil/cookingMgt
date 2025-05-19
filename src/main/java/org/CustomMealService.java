@@ -24,30 +24,6 @@ public class CustomMealService {
 
     private  CustomMealService() {
         DatabaseSetup.setupDatabase();
-       try {
-            InventoryService.addOrUpdateIngredient(new Ingredient("tomato", "out of stock", "vegetarian", 3));
-            InventoryService.addOrUpdateIngredient(new Ingredient("rice", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("broccoli", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("strawberry", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("chicken", "available", "Non-vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("fish", "available", "Non-vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("apple", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("mushroom", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("veal", "available", "Non-vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("cheese", "available", "vegetarian", 15));
-            InventoryService.addOrUpdateIngredient(new Ingredient("olive oil", "available", "vegetarian", 15));
- InventoryService.addOrUpdateIngredient(new Ingredient("banana", "available", "vegetarian", 15));
-
-
-
-
-
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
 
     }
 

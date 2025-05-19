@@ -53,7 +53,7 @@ public class Supplier {
             if (rs.next()) {
                 return rs.getString("supplier_name");
             } else {
-                throw new RuntimeException("No suppliers found for: " + ingredient);
+                return "No suppliers found for: " ;
             }
         }
     }
