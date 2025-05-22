@@ -30,33 +30,36 @@ public class TaskManager {
 
 
             String query = "SELECT chef_id FROM CHEFS ORDER BY jobload ASC LIMIT 1";
-            int chefId = -1;
+
 
             try (PreparedStatement stmt = conn.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    chefId = rs.getInt("chef_id");
-                }
+                    int chefId = rs.getInt("chef_id");
 
-            }
 
-            if (chefId == -1) {
-                System.out.println("No available chefs to assign the task.");
-                return chefId;
-            }
+
+
 
             String insertTaskQuery = "INSERT INTO tasks (order_id, chef_id, task_name, status) VALUES (?, ?, ?, 'Acknowledge')";
-            try (PreparedStatement stmt = conn.prepareStatement(insertTaskQuery)) {
-                stmt.setInt(1, orderId);
-                stmt.setInt(2, chefId);
-                stmt.setString(3, mealName);
-                stmt.executeUpdate();
+            try (PreparedStatement stmt2 = conn.prepareStatement(insertTaskQuery)) {
+                stmt2.setInt(1, orderId);
+                stmt2.setInt(2, chefId);
+                stmt2.setString(3, mealName);
+                stmt2.executeUpdate();
                 NotificationService.getInstance().sendNotification(chefId, "New Task Assigned: " + mealName);
             }
             return chefId;
-        } catch (SQLException e) {
-           logger.info(e.getMessage());
         }
+            }
+
+        }
+
+                catch (SQLException e) {
+           logger.info(e.getMessage());
+
+        }
+
         return -1;
     }
     public String TaskStatus(String taskName, int chefid) {
@@ -67,23 +70,21 @@ public class TaskManager {
                 stmt.setString(1, taskName);
                 stmt.setInt(2, chefid);
 
-                System.out.println("Executing query with taskName: " + taskName + " and chefId: " + chefid);
+               logger.info("Executing query with taskName: " + taskName + " and chefId: " + chefid);
 
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
 
                     String status = rs.getString("status");
-                    System.out.println("Found status: " + status);
+                    logger.info("Found status: " + status);
                     return status;
-                } else {
-
-                    System.out.println("No matching task found for taskName: " + taskName + " and chefId: " + chefid);
                 }
-            }
-        } catch (SQLException e) {
+        }} catch (SQLException e) {
             logger.warning(e.getMessage());
-        }
+            logger.warning("No matching task found for taskName: " + taskName + " and chefId: " + chefid);
+
+            }
         return null;
     }
 
@@ -116,13 +117,14 @@ public class TaskManager {
 
                     System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
                 } else {
-                    System.out.println("No chef found with expertise: " + requiredExpertise);
-                    return -1;
+
                 }
             }
 
         } catch (SQLException e) {
             logger.warning("Error assigning task: " + e.getMessage());
+           logger.warning("No chef found with expertise: " + requiredExpertise);
+            return -1;
         }
 
         logger.info("Assigning task to chef completed.");
