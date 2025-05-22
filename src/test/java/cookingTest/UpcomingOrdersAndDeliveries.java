@@ -9,6 +9,7 @@ import org.*;
 import org.database.DatabaseConnection;
 import org.junit.Assert;
 
+import javax.swing.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -72,14 +73,13 @@ public class UpcomingOrdersAndDeliveries {
     public void aCookingTaskIsScheduledForTomorrow() {
         LocalDate today = LocalDate.now().plusDays(1);
         String taskDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
+        orderId = kitchenManager1.insertOrder(customerId, mealName, taskDate);
     }
 
     @And("the chef is assigned to that task")
     public void theChefIsAssignedToThatTask() {
-     orderId=  kitchenManager1.insertOrder(customerId, mealName, taskDate);
-     chefid= manager.assignTaskToChef(orderId,mealName);
-
+    chefid= manager.assignTaskToChef(orderId,mealName);
+      Assert.assertTrue(" The status must be Acknowledge",kitchenManager1.getTaskStatusForKitchenManager(mealName,chefid).equalsIgnoreCase("Acknowledge"));
     }
 
     @When("the system runs the daily reminder job")
@@ -88,6 +88,8 @@ public class UpcomingOrdersAndDeliveries {
            check=   notification.sendChefRemindersForTomorrow();
         }
         Assert.assertTrue("the Reminder must be send ",check);
+
+
     }
 
     @Then("the chef should receive a notification with the meal details and preparation time")

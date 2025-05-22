@@ -35,14 +35,12 @@ public class NotificationService {
             int rowsInserted = stmtInsert.executeUpdate();
             if (rowsInserted > 0) {
                 return "Notification sent to Chef ID: " + chefId + " for task: " + taskName;
-            } else {
-                System.out.println("Chef ID '" + chefId + "' not found in database.");
-                return "Error: Chef ID '" + chefId + "' not found.";
             }
         } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
-            return "Error sending notification";
+            logger.warning("Database error: " + e.getMessage());
+
         }
+        return "Error sending notification";
     }
 
 
@@ -77,7 +75,6 @@ public class NotificationService {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
-
 
             while (rs.next()) {
                 String taskName = rs.getString("task_name");
