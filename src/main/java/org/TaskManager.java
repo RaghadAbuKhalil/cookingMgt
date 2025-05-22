@@ -87,51 +87,48 @@ public class TaskManager {
         return null;
     }
 
+    public int assignTaskToChefByExpertise(String taskName, String requiredExpertise) {
+        String selectSql = "SELECT chef_id, jobload FROM CHEFS WHERE expertise = ? ORDER BY jobload ASC LIMIT 1";
+        String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Acknowledge')";
+        String updateLoadSql = "UPDATE CHEFS SET jobload = jobload + 1 WHERE chef_id = ?";
 
-        public int assignTaskToChefByExpertise(String taskName,  String requiredExpertise) {
-            String selectSql = "SELECT chef_id, jobload FROM CHEFS WHERE expertise = ? ORDER BY jobload ASC LIMIT 1";
-            String insertTaskSql = "INSERT INTO TASKS (task_name, chef_id, status) VALUES (?, ?, 'Acknowledge')";
-            String updateLoadSql = "UPDATE CHEFS SET jobload = jobload + 1 WHERE chef_id = ?";
-            int selectedChefId = -1;
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(selectSql)) {
-                    stmt.setString(1, requiredExpertise);
-                    ResultSet rs = stmt.executeQuery();
-                    if (rs.next()) {
-                        selectedChefId = rs.getInt("chef_id");
-                        PreparedStatement    stmt1 = conn.prepareStatement(insertTaskSql);
-                            stmt1.setString(1, taskName);
-                            stmt1.setInt(2, selectedChefId);
-                            stmt1.executeUpdate();
+        int selectedChefId = -1;
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
 
+            selectStmt.setString(1, requiredExpertise);
 
-                        try (PreparedStatement stmt2 = conn.prepareStatement(updateLoadSql)) {
-                            stmt2.setInt(1, selectedChefId);
-                            stmt2.executeUpdate();
-                        }
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                if (rs.next()) {
+                    selectedChefId = rs.getInt("chef_id");
 
-
-                        System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
-
-                    } else {
-                        System.out.println("No chef found with expertise: " + requiredExpertise);
-                        return -1;
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertTaskSql)) {
+                        insertStmt.setString(1, taskName);
+                        insertStmt.setInt(2, selectedChefId);
+                        insertStmt.executeUpdate();
                     }
 
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateLoadSql)) {
+                        updateStmt.setInt(1, selectedChefId);
+                        updateStmt.executeUpdate();
+                    }
 
-
-
-            } catch (SQLException e) {
-                logger.warning(e.getMessage());
+                    System.out.println("Task '" + taskName + "' assigned to chef with ID: " + selectedChefId);
+                } else {
+                    System.out.println("No chef found with expertise: " + requiredExpertise);
+                    return -1;
+                }
             }
 
-finally {
-             logger.info("assigning task to chef ");
-            }
-            return selectedChefId;
-
+        } catch (SQLException e) {
+            logger.warning("Error assigning task: " + e.getMessage());
         }
+
+        logger.info("Assigning task to chef completed.");
+        return selectedChefId;
+    }
+
 
 }
 

@@ -50,7 +50,7 @@ public class CustomMealService {
                     conn.commit();
                     return false;
                 } else {
-                    System.out.println("Ingredient available: " + ingr);
+                   logger.info("Ingredient available: " + ingr);
                     try (PreparedStatement stmt = conn.prepareStatement(checkIncompatible)) {
                         stmt.setString(1, ingr);
                         stmt.setString(2, ingr);
@@ -59,7 +59,7 @@ public class CustomMealService {
                         ResultSet rs1 = stmt.executeQuery();
 
                         if (rs1.next() && rs1.getInt(1) > 0) {
-                            System.out.println("This ingredient is incompatible with another ingredient in the meal.");
+                           logger.info("This ingredient is incompatible with another ingredient in the meal.");
                             conn.commit();
                             return false;
                         }
@@ -70,13 +70,13 @@ public class CustomMealService {
                         insertStmt.setInt(1, mealId);
                         insertStmt.setString(2, ingr);
                         insertStmt.executeUpdate();
-                        System.out.println("Added: " + ingr);
+                        logger.info("Added: " + ingr);
                         conn.commit();
                         return true;
                     }
                 }
             } else {
-                System.out.println("Ingredient unavailable: " + ingr);
+                logger.info("Ingredient unavailable: " + ingr);
                 suggestAlternetive(ingr, mealId);
                 conn.commit();
                 return false;
@@ -101,19 +101,19 @@ public class CustomMealService {
                 String dietary = allergyResult.getString(1);
                 String allergy = allergyResult.getString(2);
                 if (allergy != null && !allergy.equalsIgnoreCase("none") && allergy.equalsIgnoreCase(ingr)) {
-                    System.out.println("Customer has an  allergy to " + ingr);
+                  logger.info("Customer has an  allergy to " + ingr);
                     suggestAlternetive(ingr, mealId);
                     return false;
                 }
                 if (dietary.equalsIgnoreCase("vegan") && category.equalsIgnoreCase("Non-vegetarian")) {
-                    System.out.println(ingr + " is not suitable a vegan diet.");
+                    logger.info(ingr + " is not suitable a vegan diet.");
                     suggestAlternetive(ingr, mealId);
                     return false;
                 }
 
             }
         } catch (SQLException e) {
-            System.out.println(" Error!  Cannot find customer Allergies and Dietary preferences.");
+          logger.info(" Error!  Cannot find customer Allergies and Dietary preferences.");
             throw new SQLException(e);
         }
         return true;
@@ -171,7 +171,7 @@ public class CustomMealService {
             customerStmt.setInt(1, mealId);
             ResultSet customerRs = customerStmt.executeQuery();
             if (!customerRs.next()) {
-                System.out.println("No customer preferences found for meal ID: " + mealId);
+               logger.info("No customer preferences found for meal ID: " + mealId);
                 return null;
             }
 
@@ -190,14 +190,14 @@ public class CustomMealService {
 
             if (inventoryRs.next()) {
                 String suggested = inventoryRs.getString("name");
-                System.out.println("Suggested Alternative: " + suggested);
+                logger.info("Suggested Alternative: " + suggested);
                 return suggested;
             } else {
-                System.out.println("No suitable alternative found for " + ingredientName);
+               logger.info("No suitable alternative found for " + ingredientName);
                 return null;
             }
         } catch (SQLException e) {
-            System.err.println("SQL Error: " + e.getMessage());
+            logger.warning("SQL Error: " + e.getMessage());
             throw new SQLException("Error in suggesting an alternative", e);
         }
         finally {

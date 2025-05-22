@@ -79,24 +79,21 @@ public class InventoryService
         }
         return lowStock ;
     }
-    public void  updateStatusToOutOfStock(String name) throws SQLException {
-        String sql = "UPDATE inventory SET status = 'out of stock' WHERE name = ? and quantity < ?";
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, name);
-            stmt.setInt(2, min);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        }
-        finally {
-            logger.info("the status updated yo out of stock");
-        }
+    public void updateStatusToOutOfStock(String name) throws SQLException {
+    String sql = "UPDATE inventory SET status = 'out of stock' WHERE name = ? AND quantity < ?";
 
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, name);
+        stmt.setInt(2, min);
+        stmt.executeUpdate();
 
+    } catch (SQLException e) {
+        throw new SQLException("Error updating status to out of stock", e);
+    }
 
+    logger.info("The status updated to out of stock");
 }
+
     public List<String> getAlters() throws SQLException {
         List<String> alters = new ArrayList<>();
         for (String ingredient:checkForLowStock()){

@@ -25,30 +25,33 @@ public class Chef {
 
     public int addChef(String chefName, String expertise) {
         int chefId = -1;
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "INSERT INTO CHEFS (chef_name, expertise) VALUES (?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        String sql = "INSERT INTO CHEFS (chef_name, expertise) VALUES (?, ?)";
+
+        try (
+                Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+        ) {
             stmt.setString(1, chefName);
             stmt.setString(2, expertise);
 
             stmt.executeUpdate();
 
-
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                chefId = generatedKeys.getInt(1);
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    chefId = generatedKeys.getInt(1);
+                }
             }
 
         } catch (SQLException e) {
-            logger.warning(e.getMessage());
+            logger.warning("Error adding chef: " + e.getMessage());
         }
-        finally {
-           logger.info("Adding chef...");
-        }
+
+        logger.info("Adding chef...");
         return chefId;
     }
 
-         public void setChefJobload(int chefId, int jobload) {
+
+    public void setChefJobload(int chefId, int jobload) {
              String sql = "UPDATE CHEFS SET jobload = ? WHERE chef_id = ?";
 
              try (Connection conn = DatabaseConnection.getConnection();
@@ -59,9 +62,9 @@ public class Chef {
 
                  int updated = stmt.executeUpdate();
                  if (updated > 0) {
-                     System.out.println("Jobload updated successfully for chef ID: " + chefId);
+                    logger.info("Jobload updated successfully for chef ID: " + chefId);
                  } else {
-                     System.out.println("Chef not found with ID: " + chefId);
+                     logger.info("Chef not found with ID: " + chefId);
                  }
 
              } catch (SQLException e) {
@@ -74,70 +77,78 @@ public class Chef {
 
 
     public void taskInProgress(int chefid, String taskName) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        String sql = "UPDATE tasks SET status = 'In Progress' WHERE task_name = ? AND chef_id = ?";
+
+        try (
+                Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
             Chef.getInstance();
 
-            String sql = "UPDATE tasks SET status = 'In Progress' WHERE task_name = ? AND chef_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, taskName);
-            stmt.setString(2, String.valueOf(chefid));
+            stmt.setInt(2, chefid);
             stmt.executeUpdate();
+
         } catch (SQLException e) {
-            logger.warning(e.getMessage());
+            logger.warning("Error updating task status: " + e.getMessage());
         }
-        finally {
-            logger.info("The status changed to in progress");
-        }
+
+        logger.info("The status changed to in progress");
     }
 
-    public void completeTask(int chefId, String taskName)  {
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+    public void completeTask(int chefId, String taskName) {
+        String sql = "UPDATE tasks SET status = 'Completed' WHERE task_name = ? AND chef_id = ?";
+
+        try (
+                Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
             Chef.getInstance();
 
-            String sql = "UPDATE tasks SET status = 'Completed' WHERE task_name = ? AND chef_id = ? ";
-            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, taskName);
-            stmt.setString(2, String.valueOf(chefId));
+            stmt.setInt(2, chefId);
             stmt.executeUpdate();
+
         } catch (SQLException e) {
-            logger.warning(e.getMessage());
-        }
-        finally {
-            System.out.println("Task '" + taskName + "' marked as Completed.");
+            logger.warning("Error completing task: " + e.getMessage());
         }
 
-
-
-
-
+        logger.info("Task '" + taskName + "' marked as Completed.");
     }
+
+
+
+
+
+
 
     public List<String> printAllChefs() {
-        List<String> list  = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT chef_id,chef_name,expertise, jobload FROM CHEFS";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT chef_id, chef_name, expertise, jobload FROM CHEFS";
+
+        try (
+                Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()
+        ) {
             while (rs.next()) {
                 int chefId = rs.getInt("chef_id");
                 String chefName = rs.getString("chef_name");
                 String expertise = rs.getString("expertise");
                 int jobload = rs.getInt("jobload");
-                list.add("Chef ID: " + chefId + ", Name: " + chefName + ", Expertise: " + expertise + ", Jobload: " + jobload);
 
+                list.add("Chef ID: " + chefId + ", Name: " + chefName +
+                        ", Expertise: " + expertise + ", Jobload: " + jobload);
             }
 
         } catch (SQLException e) {
-            logger.warning(e.getMessage());
+            logger.warning("Error fetching chefs: " + e.getMessage());
         }
 
-        finally {
-         logger.info("getting chefs list");
-        }
+        logger.info("Getting chefs list");
         return list;
     }
-
 
 
 }
