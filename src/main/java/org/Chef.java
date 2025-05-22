@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.Main.conn;
+
 public class Chef {
     private static Chef instance;
     private static final Logger logger = Logger.getLogger(Chef.class.getName());
@@ -85,7 +87,7 @@ public class Chef {
         }
     }
 
-    public void completeTask(int chefId, String taskName) {
+    public void completeTask(int chefId, String taskName)  {
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             Chef.getInstance();
@@ -98,6 +100,10 @@ public class Chef {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
+        System.out.println("Task '" + taskName + "' marked as Completed.");
+
+
+
 
     }
 

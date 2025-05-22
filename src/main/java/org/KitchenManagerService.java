@@ -100,7 +100,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
 
 
 
-    public void updateOrderStatus(int orderId, String newStatus) {
+    public static void updateOrderStatus(int orderId, String newStatus) {
         String updateStatusSQL = "UPDATE orders SET status = ? WHERE order_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(updateStatusSQL)) {

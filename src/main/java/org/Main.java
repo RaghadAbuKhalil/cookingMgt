@@ -124,9 +124,9 @@ public class Main {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        KitchenManagerService kitchenManagerService = new KitchenManagerService();
+        KitchenManagerService kitchenManagerService = KitchenManagerService.getInstance();
         while (true) {
             System.out.println("\nWelcome to Special Cook Project Management System");
             System.out.println("Select user type:");
@@ -206,10 +206,10 @@ public class Main {
         scanner.close();
     }
 
-    public static void LoginAsCustomer(int customerId) {
+    public static void LoginAsCustomer(int customerId) throws SQLException {
         CustomMealService customMealService = CustomMealService.getInstance();
         OrderHistoryService orderHistoryService = OrderHistoryService.getInstance();
-        KitchenManagerService kitchenManagerService = new KitchenManagerService();
+        KitchenManagerService kitchenManagerService =  KitchenManagerService.getInstance();
         InvoicesAndFinancial invoicesAndFinancial = new InvoicesAndFinancial();
         System.out.println("Welcome back! We’re happy to serve you.❤️🍽️");
         while (true) {
@@ -229,7 +229,7 @@ public class Main {
                     System.out.println(" Your Allergy: " + DietaryAndAllergies.getCustomerAllergies(customerId));
                     break;
                 case "2":
-                    CustomMealService.showCustomMeals(customerId);
+                  showCustomMeals(customerId);
                     break;
                 case "3":
                     System.out.print("Enter name for the new custom meal: ");
@@ -346,7 +346,9 @@ public class Main {
                         chef.taskInProgress(chefId, taskName);
                         System.out.println("Task marked as In Progress");
                     } else if (status.equals("2")) {
-                        chef.completeTask(chefId, taskName);
+
+                            chef.completeTask(chefId, taskName);
+
                         System.out.println("Task marked as Completed");
                     } else {
                         System.out.println("Invalid choice");
@@ -363,7 +365,7 @@ public class Main {
         }
     }
 
-    public static void kitchenManagerMenu() {
+    public static void kitchenManagerMenu() throws SQLException {
         Chef chef = Chef.getInstance();
         KitchenManagerService manager = KitchenManagerService.getInstance();
         Supplier supplier = new Supplier();
@@ -388,7 +390,7 @@ public class Main {
                     chef.printAllChefs();
                     break;
                 case "2":
-                    manager.printAllTasks();
+                    printAllTasks();
                     break;
                 case "3":
                     System.out.print("Enter chef ID: ");
@@ -577,7 +579,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    public void printAllTasks (){
+    public static void printAllTasks(){
           String sql = "SELECT  task_name, status, expertise_required FROM tasks";
 
           try (Connection conn = DatabaseConnection.getConnection();
@@ -626,5 +628,4 @@ public class Main {
         }
     }
 
-}
-*/
+}*/

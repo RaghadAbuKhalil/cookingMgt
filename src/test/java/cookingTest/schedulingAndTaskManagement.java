@@ -27,7 +27,6 @@ public class schedulingAndTaskManagement {
     private Chef chef1 ;
     private NotificationService notification1 = NotificationService.getInstance();
     private KitchenManagerService kitchenManager1  = KitchenManagerService.getInstance();
-    int  chosenChef;
     String mealname;
     List notificationList= new ArrayList<String>();
     int chefid1;
@@ -140,7 +139,7 @@ public class schedulingAndTaskManagement {
 
     @When("the chef marks the task as {string}")
     public void theChefMarksTheTaskAs(String arg0) {
-        chef1.completeTask(chefid, mealname);
+            chef1.completeTask(chefid, mealname);
 
     }
 
