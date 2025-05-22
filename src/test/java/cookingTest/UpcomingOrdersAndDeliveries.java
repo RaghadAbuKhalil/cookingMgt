@@ -74,6 +74,7 @@ public class UpcomingOrdersAndDeliveries {
         LocalDate today = LocalDate.now().plusDays(1);
         String taskDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         orderId = kitchenManager1.insertOrder(customerId, mealName, taskDate);
+        Assert.assertFalse("There is no meal with this name "+mealName,orderId==-1);
     }
 
     @And("the chef is assigned to that task")

@@ -37,7 +37,6 @@ public  void setup(){
        }
     @When("they enter their dietary preferences and allergies into the system")
     public void theyEnterTheirDietaryPreferencesAndAllergiesIntoTheSystem() {
-
         Assert.assertNotNull("the customer does not store his allergy",allergy);
         Assert.assertNotNull("the customer does not store his Preferences",preferences);
         System.out.println("Dietary preferences : " +preferences+ " and allergies :"+allergy);

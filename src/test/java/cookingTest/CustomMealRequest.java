@@ -9,6 +9,7 @@ import org.CustomMealService;
 
 import org.NotificationService;
 import org.database.DatabaseConnection;
+import org.junit.Assert;
 
 
 import java.sql.*;
@@ -220,6 +221,7 @@ if (!checkAddingIng)    System.out.println("An attempt to add uncompilable  or u
     @Given("a customer created a custom meal")
     public void aCustomerWithIDCreatedACustomMeal() {
        testCustomerId= addNewCustomer("vegan","strawberry","raghadabukhalil90@gmail.com");
+        assertNotEquals("something wrong happened will creating customer object ", -1, testCustomerId);
         mealId = customMealService.createCustomMeal(testCustomerId, "Vegan Delight");
         assertTrue("Meal should be created", mealId > 0);
     }

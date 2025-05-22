@@ -49,9 +49,10 @@ public class DietaryAndAllergies {
 
         } catch (SQLException e) {
             logger.warning(e.getMessage());
+
+            return -1;
         }
 
-        return -1;
     }
 
 
@@ -68,9 +69,6 @@ public class DietaryAndAllergies {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
-
-
-
         return null;
     }
     public static String getCustomerPreferences(int customerId) {
