@@ -127,8 +127,9 @@ public class TaskManager {
             }
 
 finally {
-                return selectedChefId;
+             logger.info("assigning task to chef ");
             }
+            return selectedChefId;
 
         }
 

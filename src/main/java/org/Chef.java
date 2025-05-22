@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
+
 public class Chef {
     private static Chef instance;
     private static final Logger logger = Logger.getLogger(Chef.class.getName());
@@ -42,9 +43,9 @@ public class Chef {
             logger.warning(e.getMessage());
         }
         finally {
-            return chefId;
+           logger.info("Adding chef...");
         }
-
+        return chefId;
     }
 
          public void setChefJobload(int chefId, int jobload) {
@@ -65,6 +66,9 @@ public class Chef {
 
              } catch (SQLException e) {
                  logger.warning(e.getMessage());
+             }
+             finally {
+                 logger.info("setting chef Jobload ");
              }
          }
 
@@ -99,7 +103,10 @@ public class Chef {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
-        System.out.println("Task '" + taskName + "' marked as Completed.");
+        finally {
+            System.out.println("Task '" + taskName + "' marked as Completed.");
+        }
+
 
 
 
@@ -124,10 +131,11 @@ public class Chef {
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
-        finally {
-            return list;
-        }
 
+        finally {
+         logger.info("getting chefs list");
+        }
+        return list;
     }
 
 

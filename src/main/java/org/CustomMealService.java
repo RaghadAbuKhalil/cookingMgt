@@ -134,6 +134,10 @@ public class CustomMealService {
         } catch (Exception e) {
             logger.warning(e.getMessage());
         }
+        finally {
+            logger.info("creating custom meal for customer ");
+        }
+
         return -1;
 
     }
@@ -195,6 +199,9 @@ public class CustomMealService {
         } catch (SQLException e) {
             System.err.println("SQL Error: " + e.getMessage());
             throw new SQLException("Error in suggesting an alternative", e);
+        }
+        finally {
+            logger.info("suggesting an alternative");
         }
     }
 }

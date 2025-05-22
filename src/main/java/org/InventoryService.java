@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class InventoryService
 {
     Connection conn;
     private final  static int min =5;
+    private static final Logger logger = Logger.getLogger(InventoryService.class.getName());
 
 
     private static InventoryService instance;
@@ -89,7 +91,7 @@ public class InventoryService
             throw new SQLException(e);
         }
         finally {
-            System.out.println("the status updated yo out of stock");
+            logger.info("the status updated yo out of stock");
         }
 
 
