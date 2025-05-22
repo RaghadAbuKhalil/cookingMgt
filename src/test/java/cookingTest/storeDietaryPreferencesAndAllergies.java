@@ -98,9 +98,7 @@ public  void setup(){
         Assert.assertFalse(alternative.isEmpty());
         System.out.println("Warning: This dessert contains allergens! Suggested alternative: "+alternative);
     }
-    public void theSystemWarnsThemAndSuggestsAnAlternative() {
 
-    }
 
 
 

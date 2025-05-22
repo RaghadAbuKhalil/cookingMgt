@@ -56,6 +56,7 @@ kitchenManager1.updateOrderStatus(orderId,"Completed");
     public void theOrderIsCompleted() {
 kitchenManager1.updateOrderStatus(orderId,"Completed");
 String status= kitchenManager1.getOrderStatus(orderId);
+Assert.assertNotNull("there is no order with this id ",status);
 Assert.assertEquals("the task completed","Completed",status);
     }
 

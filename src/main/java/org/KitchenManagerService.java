@@ -156,7 +156,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
         try (Connection conn = DatabaseConnection.getConnection()) {
 
             String allergyQuery = "SELECT allergies  FROM customer_preferences WHERE customer_id  = ?";
-            String customerAllergy = null;
+            String customerAllergy = "none" ;
 
             try (PreparedStatement stmt = conn.prepareStatement(allergyQuery)) {
                 stmt.setInt(1, customerId);
@@ -165,14 +165,7 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
                         customerAllergy = rs.getString("allergies").toLowerCase();
                     }
                 }
-            }
-
-            if (customerAllergy == null || customerAllergy.isEmpty()) {
-                return null;
-            }
-
-
-            String query = """
+                String query = """
             SELECT m.name
             FROM menu_items m
             WHERE NOT EXISTS (
@@ -182,20 +175,25 @@ public String getTaskStatusForKitchenManager(String taskName,int chefId){
             LIMIT 1;
             """;
 
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, "%" + customerAllergy + "%");
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getString("name");
+                try (PreparedStatement stmt2 = conn.prepareStatement(query)) {
+                    stmt2.setString(1, "%" + customerAllergy + "%");
+                    try (ResultSet rs = stmt2.executeQuery()) {
+                        if (rs.next()) {
+                            return rs.getString("name");
+                        }
                     }
                 }
+
             }
+
+
 
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
+            return null;
 
-        return null;
+
     }
 
 
